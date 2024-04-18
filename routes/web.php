@@ -35,13 +35,29 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/edit/teori', 'PendidikanController@editTeori');
 
         //praktikum
-
+        $router->get('/praktikum/{id}', 'PendidikanController@getPraktikum');
+        $router->post('/praktikum', 'PendidikanController@postPraktikum');
+        $router->delete('/praktikum/{id}', 'PendidikanController@deletePraktikum');
+        $router->post('/edit/praktikum', 'PendidikanController@editPraktikum');
+        
         //bimbingan
-
+        $router->get('/bimbingan/{id}', 'PendidikanController@getBimbingan');
+        $router->post('/bimbingan', 'PendidikanController@postBimbingan');
+        $router->delete('/bimbingan/{id}', 'PendidikanController@deleteBimbingan');
+        $router->post('/edit/bimbingan', 'PendidikanController@editBimbingan');
+        
         //seminar
-
+        $router->get('/seminar/{id}', 'PendidikanController@getSeminar');
+        $router->post('/seminar', 'PendidikanController@postSeminar');
+        $router->delete('/seminar/{id}', 'PendidikanController@deleteSeminar');
+        $router->post('/edit/seminar', 'PendidikanController@editSeminar');
+        
         //Tugas Akhir
-
+        $router->get('/tugasakhir/{id}', 'PendidikanController@getTugasakhir');
+        $router->post('/tugasakhir', 'PendidikanController@postTugasakhir');
+        $router->delete('/tugasakhir/{id}', 'PendidikanController@deleteTugasakhir');
+        $router->post('/edit/tugasakhir', 'PendidikanController@editTugasakhir');
+        
         //Proposal
 
         // rendah
