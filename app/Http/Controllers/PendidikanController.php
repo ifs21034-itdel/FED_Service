@@ -90,6 +90,7 @@ class PendidikanController extends Controller
         $id_rencana = $request->get('id_rencana');
 
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
 
         $filenames = [];
 
@@ -98,7 +99,8 @@ class PendidikanController extends Controller
             $files = $request->file('fileInput');
             foreach ($files as $file) {
                 if ($file->isValid()) {
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_pendidikan_' . time();
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
                     $filenames[] = $filename;
                 } else {
@@ -109,10 +111,9 @@ class PendidikanController extends Controller
             return 'Tidak ada file yang dipilih.';
         }
 
-        $rencana->lampiran = implode(',', $filenames);
+        $rencana->lampiran = $filenames;
         $rencana->save();
 
-        // Kembalikan respons JSON setelah semua file diunggah
         $res = [
             "rencana" => $rencana,
             "message" => "Lampiran added successfully"
