@@ -53,10 +53,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/edit/seminar', 'PendidikanController@editSeminar');
         
         //Tugas Akhir
-        $router->get('/tugasakhir/{id}', 'PendidikanController@getTugasakhir');
-        $router->post('/tugasakhir', 'PendidikanController@postTugasakhir');
-        $router->delete('/tugasakhir/{id}', 'PendidikanController@deleteTugasakhir');
-        $router->post('/edit/tugasakhir', 'PendidikanController@editTugasakhir');
+        $router->get('/tugasAkhir/{id}', 'PendidikanController@getTugasakhir');
+        $router->post('/tugasAkhir', 'PendidikanController@postTugasakhir');
+        $router->delete('/tugasAkhir/{id}', 'PendidikanController@deleteTugasakhir');
+        $router->post('/edit/tugasAkhir', 'PendidikanController@editTugasakhir');
         
         //Proposal
 

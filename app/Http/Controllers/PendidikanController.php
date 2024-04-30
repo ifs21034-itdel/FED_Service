@@ -17,6 +17,12 @@ class PendidikanController extends Controller
             ->where('rencana.sub_rencana', 'teori')
             ->get();
 
+        // BAGIAN B
+        $praktikum = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung')
+            ->where('rencana.sub_rencana', 'praktikum')
+            ->get();
+
         // BAGIAN C
         $bimbingan = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung')
@@ -31,7 +37,7 @@ class PendidikanController extends Controller
 
         // BAGIAN E
         $tugasAkhir = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung')
             ->where('rencana.sub_rencana', 'tugasAkhir')
             ->get();
 
@@ -62,6 +68,7 @@ class PendidikanController extends Controller
         // Kembalikan data dalam bentuk yang sesuai untuk ditampilkan di halaman
         return response()->json([
             'teori' => $teori,
+            'praktikum' => $praktikum,
             'bimbingan' => $bimbingan,
             'rendah' => $rendah,
             'kembang' => $kembang,
@@ -185,7 +192,7 @@ class PendidikanController extends Controller
     public function getTugasAkhir($id)
     {
         $tugasAkhir = Rencana::join('detail_pendidikan', 'rencana.id_rencana', "=", 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung')
             ->where('rencana.sub_rencana', 'tugasAkhir')
             ->where('id_dosen', $id)
             ->get();
