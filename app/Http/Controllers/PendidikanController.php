@@ -13,7 +13,7 @@ class PendidikanController extends Controller
     {
          // BAGIAN A
         $teori = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.jumlah_evaluasi', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.jumlah_evaluasi', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'teori')
             ->get();
 
@@ -83,7 +83,7 @@ class PendidikanController extends Controller
     public function getTeori($id)
     {
         $teori = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.jumlah_evaluasi', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.jumlah_evaluasi', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'teori')
             ->where('id_dosen', $id)
             ->get();
@@ -93,7 +93,40 @@ class PendidikanController extends Controller
 
     public function postTeori(Request $request)
     {
-        
+        $request->all();
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->file()) {
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+
+        $rencana->lampiran = $filenames;
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
 
     public function editTeori(Request $request)
