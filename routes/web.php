@@ -58,7 +58,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/tugasakhir/{id}', 'PendidikanController@deleteTugasakhir');
         $router->post('/edit/tugasakhir', 'PendidikanController@editTugasakhir');
         
-        //Proposal
+        //proposal
 
         // rendah
 
