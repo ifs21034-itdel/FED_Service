@@ -396,7 +396,40 @@ class PendidikanController extends Controller
 
     public function postProposal(Request $request)
     {
-        
+        $request->all();
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->file()) {
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_proposal_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+
+        $rencana->lampiran = $filenames;
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
 
 
