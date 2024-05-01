@@ -30,9 +30,9 @@ class PendidikanController extends Controller
             ->get();
 
         // BAGIAN D
-        $rendah = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+        $seminar = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung')
-            ->where('rencana.sub_rencana', 'bimbing_rendah')
+            ->where('rencana.sub_rencana', 'seminar')
             ->get();
 
         // BAGIAN E
@@ -48,9 +48,9 @@ class PendidikanController extends Controller
             ->get();
 
         // BAGIAN G
-        $kembang = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+        $rendah = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_sap', 'rencana.sks_terhitung')
-            ->where('rencana.sub_rencana', 'bimbing_rendah')
+            ->where('rencana.sub_rencana', 'rendah')
             ->get();
 
         // BAGIAN I
@@ -73,6 +73,7 @@ class PendidikanController extends Controller
             'rendah' => $rendah,
             'kembang' => $kembang,
             'cangkok' => $cangkok,
+            'seminar' => $seminar,
             'koordinator' => $koordinator,
             'tugasAkhir' => $tugasAkhir,
             'proposal' => $proposal
@@ -457,7 +458,40 @@ class PendidikanController extends Controller
 
     public function postRendah(Request $request)
     {
-        
+        $request->all();
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->file()) {
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_rendah_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+
+        $rencana->lampiran = $filenames;
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
 
     public function editRendah(Request $request)
@@ -484,7 +518,40 @@ class PendidikanController extends Controller
 
     public function postKembang(Request $request)
     {
-        
+        $request->all();
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->file()) {
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_kembang_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+
+        $rencana->lampiran = $filenames;
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
 
     public function editKembang(Request $request)
@@ -513,7 +580,40 @@ class PendidikanController extends Controller
 
     public function postCangkok(Request $request)
     {
-        
+        $request->all();
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->file()) {
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_cangkok_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+
+        $rencana->lampiran = $filenames;
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
 
     public function deleteCangkok($id)
@@ -541,7 +641,40 @@ class PendidikanController extends Controller
 
     public function postKoordinator(Request $request)
     {
-        
+        $request->all();
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->file()) {
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_koordinator_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+
+        $rencana->lampiran = $filenames;
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
 
     public function editKoordinator(Request $request)
