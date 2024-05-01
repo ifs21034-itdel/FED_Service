@@ -163,11 +163,11 @@ class PendidikanController extends Controller
 
         if ($request->file()) {
 
-            $files = $request->file('fileInputB');
+            $files = $request->file('fileInput');
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_praktikum_' . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
                     $filenames[] = $filename;
                 } else {
@@ -222,11 +222,11 @@ class PendidikanController extends Controller
 
         if ($request->file()) {
 
-            $files = $request->file('fileInputC');
+            $files = $request->file('fileInput');
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_bimbingan_' . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
                     $filenames[] = $filename;
                 } else {
@@ -283,11 +283,11 @@ class PendidikanController extends Controller
 
         if ($request->file()) {
 
-            $files = $request->file('fileInputD');
+            $files = $request->file('fileInput');
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_seminar_' . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
                     $filenames[] = $filename;
                 } else {
@@ -344,11 +344,11 @@ class PendidikanController extends Controller
 
         if ($request->file()) {
 
-            $files = $request->file('fileInputE');
+            $files = $request->file('fileInput');
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_tugasAkhir_' . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
                     $filenames[] = $filename;
                 } else {
