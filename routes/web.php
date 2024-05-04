@@ -93,100 +93,100 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     //START ROUTE FOR PENUNJANG
     $router->group(['prefix' => 'penunjang'], function () use ($router) {
         // Bagian A
-        $router->get('/akademik/{id}', 'penunjang_controller@getAkademik');
-        $router->post('/akademik', 'penunjang_controller@postAkademik');
-        $router->post('/edit/akademik', 'penunjang_controller@editAkademik');
-        $router->delete('/akademik/{id}', 'penunjang_controller@deleteAkademik');
+        $router->get('/akademik/{id}', 'PenunjangController@getAkademik');
+        $router->post('/akademik', 'PenunjangController@postAkademik');
+        $router->post('/edit/akademik', 'PenunjangController@editAkademik');
+        $router->delete('/akademik/{id}', 'PenunjangController@deleteAkademik');
         // END OF BAGIAN A
 
         //BAGIAN B
-        $router->get('/bimbingan/{id}', 'penunjang_controller@getBimbingan');
-        $router->post('/bimbingan', 'penunjang_controller@postBimbingan');
-        $router->post('/edit/bimbingan', 'penunjang_controller@editBimbingan');
-        $router->delete('/bimbingan/{id}', 'penunjang_controller@deleteBimbingan');
+        $router->get('/bimbingan/{id}', 'PenunjangController@getBimbingan');
+        $router->post('/bimbingan', 'PenunjangController@postBimbingan');
+        $router->post('/edit/bimbingan', 'PenunjangController@editBimbingan');
+        $router->delete('/bimbingan/{id}', 'PenunjangController@deleteBimbingan');
         //END OF BAGIAN B
 
         //BAGIAN C
-        $router->get('/ukm/{id}', 'penunjang_controller@getUkm');
-        $router->post('/ukm', 'penunjang_controller@postUkm');
-        $router->post('/edit/ukm/', 'penunjang_controller@editUkm');
-        $router->delete('/ukm/{id}', 'penunjang_controller@deleteUkm');
+        $router->get('/ukm/{id}', 'PenunjangController@getUkm');
+        $router->post('/ukm', 'PenunjangController@postUkm');
+        $router->post('/edit/ukm/', 'PenunjangController@editUkm');
+        $router->delete('/ukm/{id}', 'PenunjangController@deleteUkm');
         //END OF BAGIAN C
 
         //BAGIAN D
-        $router->get('/sosial/{id}', 'penunjang_controller@getSosial');
-        $router->post('/sosial', 'penunjang_controller@postSosial');
-        $router->post('/edit/sosial/', 'penunjang_controller@editSosial');
-        $router->delete('/sosial/{id}', 'penunjang_controller@deleteSosial');
+        $router->get('/sosial/{id}', 'PenunjangController@getSosial');
+        $router->post('/sosial', 'PenunjangController@postSosial');
+        $router->post('/edit/sosial/', 'PenunjangController@editSosial');
+        $router->delete('/sosial/{id}', 'PenunjangController@deleteSosial');
         //END OF BAGIAN D
 
         // BAGIAN E
-        $router->get('/struktural/{id}', 'penunjang_controller@getStruktural');
-        $router->post('/struktural', 'penunjang_controller@postStruktural');
-        $router->post('/edit/struktural/', 'penunjang_controller@editStruktural');
-        $router->delete('/struktural/{id}', 'penunjang_controller@deleteStruktural');
+        $router->get('/struktural/{id}', 'PenunjangController@getStruktural');
+        $router->post('/struktural', 'PenunjangController@postStruktural');
+        $router->post('/edit/struktural/', 'PenunjangController@editStruktural');
+        $router->delete('/struktural/{id}', 'PenunjangController@deleteStruktural');
         // END OF BAGIAN E
 
         // BAGIAN F
-        $router->get('/nonstruktural/{id}', 'penunjang_controller@getNonstruktural');
-        $router->post('/nonstruktural', 'penunjang_controller@postNonstruktural');
-        $router->post('/edit/nonstruktural/', 'penunjang_controller@editNonstruktural');
-        $router->delete('/nonstruktural/{id}', 'penunjang_controller@deleteNonstruktural');
+        $router->get('/nonstruktural/{id}', 'PenunjangController@getNonstruktural');
+        $router->post('/nonstruktural', 'PenunjangController@postNonstruktural');
+        $router->post('/edit/nonstruktural/', 'PenunjangController@editNonstruktural');
+        $router->delete('/nonstruktural/{id}', 'PenunjangController@deleteNonstruktural');
         // END OF BAGIAN F
 
         // BAGIAN G
-        $router->get('/redaksi/{id}', 'penunjang_controller@getRedaksi');
-        $router->post('/redaksi', 'penunjang_controller@postRedaksi');
-        $router->post('/edit/redaksi/', 'penunjang_controller@editRedaksi');
-        $router->delete('/redaksi/{id}', 'penunjang_controller@deleteRedaksi');
+        $router->get('/redaksi/{id}', 'PenunjangController@getRedaksi');
+        $router->post('/redaksi', 'PenunjangController@postRedaksi');
+        $router->post('/edit/redaksi/', 'PenunjangController@editRedaksi');
+        $router->delete('/redaksi/{id}', 'PenunjangController@deleteRedaksi');
         // END OF BAGIAN G
 
         // BAGIAN H
-        $router->get('/adhoc/{id}', 'penunjang_controller@getAdhoc');
-        $router->post('/adhoc', 'penunjang_controller@postAdhoc');
-        $router->post('/edit/adhoc/', 'penunjang_controller@editAdhoc');
-        $router->delete('/adhoc/{id}', 'penunjang_controller@deleteAdhoc');
+        $router->get('/adhoc/{id}', 'PenunjangController@getAdhoc');
+        $router->post('/adhoc', 'PenunjangController@postAdhoc');
+        $router->post('/edit/adhoc/', 'PenunjangController@editAdhoc');
+        $router->delete('/adhoc/{id}', 'PenunjangController@deleteAdhoc');
         // END OF BAGIAN H
 
         // BAGIAN I
-        $router->get('/ketuapanitia/{id}', 'penunjang_controller@getKetuaPanitia');
-        $router->post('/ketuapanitia', 'penunjang_controller@postKetuaPanitia');
-        $router->post('/edit/ketuapanitia', 'penunjang_controller@editKetuaPanitia');
-        $router->delete('/ketuapanitia/{id}', 'penunjang_controller@deleteKetuaPanitia');
+        $router->get('/ketuapanitia/{id}', 'PenunjangController@getKetuaPanitia');
+        $router->post('/ketuapanitia', 'PenunjangController@postKetuaPanitia');
+        $router->post('/edit/ketuapanitia', 'PenunjangController@editKetuaPanitia');
+        $router->delete('/ketuapanitia/{id}', 'PenunjangController@deleteKetuaPanitia');
 
         // BAGIAN J
-        $router->get('/anggotapanitia/{id}', 'penunjang_controller@getAnggotaPanitia');
-        $router->post('/anggotapanitia', 'penunjang_controller@postAnggotaPanitia');
-        $router->post('/edit/anggotapanitia', 'penunjang_controller@editAnggotaPanitia');
-        $router->delete('/anggotapanitia/{id}', 'penunjang_controller@deleteAnggotaPanitia');
+        $router->get('/anggotapanitia/{id}', 'PenunjangController@getAnggotaPanitia');
+        $router->post('/anggotapanitia', 'PenunjangController@postAnggotaPanitia');
+        $router->post('/edit/anggotapanitia', 'PenunjangController@editAnggotaPanitia');
+        $router->delete('/anggotapanitia/{id}', 'PenunjangController@deleteAnggotaPanitia');
 
         // BAGIAN K
-        $router->get('/pengurusyayasan/{id}', 'penunjang_controller@getPengurusYayasan');
-        $router->post('/pengurusyayasan', 'penunjang_controller@postPengurusYayasan');
-        $router->post('/edit/pengurusyayasan', 'penunjang_controller@editPengurusYayasan');
-        $router->delete('/pengurusyayasan/{id}', 'penunjang_controller@deletePengurusYayasan');
+        $router->get('/pengurusyayasan/{id}', 'PenunjangController@getPengurusYayasan');
+        $router->post('/pengurusyayasan', 'PenunjangController@postPengurusYayasan');
+        $router->post('/edit/pengurusyayasan', 'PenunjangController@editPengurusYayasan');
+        $router->delete('/pengurusyayasan/{id}', 'PenunjangController@deletePengurusYayasan');
 
         //BAGIAN L
-        $router->get('/asosiasi/{id}', 'penunjang_controller@getAsosiasi');
-        $router->post('/asosiasi', 'penunjang_controller@postAsosiasi');
-        $router->post('/edit/asosiasi', 'penunjang_controller@editAsosiasi');
-        $router->delete('/asosiasi/{id}', 'penunjang_controller@deleteAsosiasi');
+        $router->get('/asosiasi/{id}', 'PenunjangController@getAsosiasi');
+        $router->post('/asosiasi', 'PenunjangController@postAsosiasi');
+        $router->post('/edit/asosiasi', 'PenunjangController@editAsosiasi');
+        $router->delete('/asosiasi/{id}', 'PenunjangController@deleteAsosiasi');
         //END OF BAGIAN L
 
 
         //BAGIAN M
-        $router->get('/seminar/{id}', 'penunjang_controller@getSeminar');
-        $router->post('/seminar', 'penunjang_controller@postSeminar');
-        $router->post('/edit/seminar', 'penunjang_controller@editSeminar');
-        $router->delete('/seminar/{id}', 'penunjang_controller@deleteSeminar');
+        $router->get('/seminar/{id}', 'PenunjangController@getSeminar');
+        $router->post('/seminar', 'PenunjangController@postSeminar');
+        $router->post('/edit/seminar', 'PenunjangController@editSeminar');
+        $router->delete('/seminar/{id}', 'PenunjangController@deleteSeminar');
         //END OF BAGIAN M
 
 
         //BAGIAN N
-        $router->get('/reviewer/{id}', 'penunjang_controller@getReviewer');
-        $router->post('/reviewer', 'penunjang_controller@postReviewer');
-        $router->post('/edit/reviewer', 'penunjang_controller@editReviewer');
-        $router->delete('/reviewer/{id}', 'penunjang_controller@deleteReviewer');
+        $router->get('/reviewer/{id}', 'PenunjangController@getReviewer');
+        $router->post('/reviewer', 'PenunjangController@postReviewer');
+        $router->post('/edit/reviewer', 'PenunjangController@editReviewer');
+        $router->delete('/reviewer/{id}', 'PenunjangController@deleteReviewer');
         //END OF BAGIAN N
     });
 

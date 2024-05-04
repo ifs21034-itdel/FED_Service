@@ -85,7 +85,33 @@ class PenunjangController extends Controller
     }
     public function postAkademik(Request $request)
     {
+        $request->all();
+        // dd($request->all());
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
         
+        if ($request->file()) { 
+            $file = $request->file('fileInput');
+            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'' . $id_dosen . '_penunjang' . time() . '.' . $extension;
+            $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+            $filenames[] = $filename; 
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+        $rencana->lampiran = $filenames; 
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
     public function editAkademik(Request $request)
     {
@@ -110,7 +136,33 @@ class PenunjangController extends Controller
     }
     public function postBimbingan(Request $request)
     {
+        $request->all();
+        // dd($request->all());
+        $id_rencana = $request->get('id_rencana');
+
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
         
+        if ($request->file()) { 
+            $file = $request->file('fileInput');
+            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'' . $id_dosen . '_penunjang' . time() . '.' . $extension;
+            $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+            $filenames[] = $filename; 
+        } else {
+            return 'Tidak ada file yang dipilih.';
+        }
+        $rencana->lampiran = $filenames; 
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 200);
     }
     public function editBimbingan(Request $request)
     {
