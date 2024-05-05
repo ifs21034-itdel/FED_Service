@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rencana;
-use App\Models\DetailPendidikan;
+use App\Models\DetailPenelitian;
 use Illuminate\Http\Request;
 
-class PendidikanController extends Controller
+class PenelitianController extends Controller
 {
     public function getAll()
     {
         // Bagian M
         $orasi = Rencana::join('detail_penelitian', 'rencana.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.kategori', 'detail_pendidikan.sks_terhitung', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.kategori', 'detail_penelitian.sks_terhitung', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'orasi')
             ->get();
 
@@ -24,8 +24,8 @@ class PendidikanController extends Controller
 
     public function getOrasi($id)
     {
-        $orasi = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.kategori', 'detail_pendidikan.sks_terhitung', 'rencana.sks_terhitung', 'rencana.lampiran')
+        $orasi = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.kategori', 'detail_penelitian.sks_terhitung', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'orasi')
             ->where('id_dosen', $id)
             ->get();
@@ -49,8 +49,8 @@ class PendidikanController extends Controller
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
-                    $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penelitian_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/penelitian'), $filename);
                     $filenames[] = $filename;
                 } else {
                     continue;
