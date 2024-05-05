@@ -53,6 +53,12 @@ class PendidikanController extends Controller
             ->where('rencana.sub_rencana', 'rendah')
             ->get();
 
+        // BAGIAN H
+        $kembang = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_sap', 'rencana.sks_terhitung')
+            ->where('rencana.sub_rencana', 'pengembangan')
+            ->get();
+
         // BAGIAN I
         $cangkok = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung')
