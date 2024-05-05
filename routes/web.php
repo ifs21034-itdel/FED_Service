@@ -192,4 +192,19 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     //END ROUTE FOR PENUNJANG
 
+    // PENELITIAN START
+    $router->group(['prefix' => 'penelitian'], function () use ($router) {
+        // Tabel M
+        $router->get('/orasi/{id}', 'PenelitianController@getOrasi');
+        $router->post('/orasi', 'PenelitianController@postOrasi'); // Perbaikan di sini
+        $router->delete('/orasi/{id}', 'PenelitianController@deleteOrasi'); // Perbaikan di sini
+        $router->put('/orasi/{id}', 'PenelitianController@editOrasi'); // Menggunakan PUT untuk edit, bisa juga POST jika memang ingin menggunakan POST untuk edit
+    
+        // Tabel N
+        $router->get('/penyaji/{id}', 'PenelitianController@getPenyaji');
+        $router->post('/penyaji', 'PenelitianController@postPenyaji'); // Perbaikan di sini
+        $router->delete('/penyaji/{id}', 'PenelitianController@deletePenyaji'); // Perbaikan di sini
+        $router->put('/penyaji/{id}', 'PenelitianController@editPenyaji'); // Menggunakan PUT untuk edit, bisa juga POST jika memang ingin menggunakan POST untuk edit
+    });
+    
 });
