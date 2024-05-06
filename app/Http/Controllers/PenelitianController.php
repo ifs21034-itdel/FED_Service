@@ -2,84 +2,181 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rencana;
-use App\Models\DetailPenelitian;
 use Illuminate\Http\Request;
+use App\Models\DetailPenelitian;
+use App\Models\Rencana;
+
 
 class PenelitianController extends Controller
 {
     public function getAll()
     {
-        // Bagian M
-        $orasi = Rencana::join('detail_penelitian', 'rencana.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.kategori', 'detail_penelitian.sks_terhitung', 'rencana.sks_terhitung', 'rencana.lampiran')
-            ->where('rencana.sub_rencana', 'orasi')
+        // Ambil semua data dari masing-masing tabel rencana
+
+        // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A
+        $penelitian_kelompok = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_kelompok')
             ->get();
+
+        // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B
+        $penelitian_mandiri = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_mandiri')
+            ->get();
+
+        // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C
+        $buku_terbit = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan','detail_penelitian.peran','rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'buku_terbit')
+            ->get();
+
+        // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D
+        $buku_internasional = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan','detail_penelitian.peran','rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'buku_internasional')
+            ->get();
+
+        // BAGIAN E // BAGIAN E // BAGIAN E // BAGIAN E // BAGIAN E // BAGIAN E
+        $menyadur = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', "detail_penelitian.posisi",'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'menyadur')
+            ->get();
+
+        // BAGIAN F // BAGIAN F // BAGIAN F // BAGIAN F // BAGIAN F // BAGIAN F
+        $menyunting = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan','detail_penelitian.posisi', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'menyunting')
+            ->get();
+
+        // BAGIAN G // BAGIAN G // BAGIAN G // BAGIAN G // BAGIAN G // BAGIAN G
+        $penelitian_modul = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_modul')
+            ->get();
+
+        // BAGIAN H // BAGIAN H // BAGIAN H // BAGIAN H // BAGIAN H // BAGIAN H
+        $penelitian_pekerti = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_pekerti')
+            ->get();
+
+        // BAGIAN I // BAGIAN I // BAGIAN I // BAGIAN I // BAGIAN I // BAGIAN I
+        $penelitian_tridharma = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jumlah_bkd', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_tridharma')
+            ->get();
+
+        // BAGIAN J // BAGIAN J // BAGIAN J // BAGIAN J // BAGIAN J // BAGIAN J
+        $jurnal_ilmiah = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_penerbit',
+            'detail_penelitian.peran','rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'jurnal_ilmiah')
+            ->get();
+
+        // BAGIAN K // BAGIAN K // BAGIAN K // BAGIAN K // BAGIAN K // BAGIAN K
+        $hak_paten = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'hak_paten')
+            ->get();
+
+        // BAGIAN L // BAGIAN L // BAGIAN L // BAGIAN L // BAGIAN L // BAGIAN L
+        $media_massa = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'media_massa')
+            ->get();
+
+        // BAGIAN M // BAGIAN M // BAGIAN M // BAGIAN M // BAGIAN M // BAGIAN M
+        $pembicara_seminar = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'pembicara_seminar')
+            ->get();
+
+        // BAGIAN N // BAGIAN N // BAGIAN N // BAGIAN N // BAGIAN N // BAGIAN N
+        $penyajian_makalah = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+        ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_wilayah', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+        ->where('rencana.sub_rencana', 'penyajian_makalah')
+        ->get();
+
 
         // Kembalikan data dalam bentuk yang sesuai untuk ditampilkan di halaman
         return response()->json([
-            'orasi' => $orasi
+            'penelitian_kelompok' => $penelitian_kelompok,
+            'penelitian_mandiri' => $penelitian_mandiri,
+            'buku_terbit' => $buku_terbit,
+            'buku_internasional' => $buku_internasional,
+            'menyadur'=>$menyadur,
+            'menyunting'=>$menyunting,
+            'penelitian_modul' => $penelitian_modul,
+            'penelitian_pekerti' => $penelitian_pekerti,
+            'penelitian_tridharma' => $penelitian_tridharma,
+            'jurnal_ilmiah' => $jurnal_ilmiah,
+            'hak_paten' => $hak_paten,
+            'media_massa' => $media_massa,
+            'pembicara_seminar' => $pembicara_seminar,
+            'penyajian_makalah'=> $penyajian_makalah
         ], 200);
     }
 
-    public function getOrasi($id)
+    // Method D
+    public function getBukuInternasional($id)
     {
-        $orasi = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.kategori', 'detail_penelitian.sks_terhitung', 'rencana.sks_terhitung', 'rencana.lampiran')
-            ->where('rencana.sub_rencana', 'orasi')
+        $buku_internasional = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan','detail_penelitian.peran','rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'buku_internasional')
             ->where('id_dosen', $id)
             ->get();
 
-        return response()->json($orasi, 200);
+        return response()->json($buku_internasional, 200);
     }
 
-    public function postOrasi(Request $request)
-    {
-        $request->all();
-        $id_rencana = $request->get('id_rencana');
+    public function postBukuInternasional(Request $request)
+{
+    // Retrieve the id_rencana from the request payload
+    $id_rencana = $request->input('id_rencana');
 
-        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-        $id_dosen = $rencana->id_dosen;
+    // Check if Rencana exists with the provided id_rencana
+    $rencana = Rencana::where('id_rencana', $id_rencana)->first();
 
-        $filenames = [];
+    if (!$rencana) {
+        return response()->json(['error' => 'Rencana not found'], 404);
+    }
 
-        if ($request->file()) {
+    $id_dosen = $rencana->id_dosen;
 
-            $files = $request->file('fileInput');
-            foreach ($files as $file) {
-                if ($file->isValid()) {
-                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penelitian_' . time() . '.' . $extension;
-                    $file->move(app()->basePath('storage/documents/penelitian'), $filename);
-                    $filenames[] = $filename;
-                } else {
-                    continue;
-                }
+    $filenames = [];
+
+    if ($request->hasFile('fileInput')) {
+        $files = $request->file('fileInput');
+        foreach ($files as $file) {
+            if ($file->isValid()) {
+                $extension = $file->getClientOriginalExtension();
+                $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . $id_dosen . '_Buku_Internasional_' . time() . '.' . $extension;
+                $file->move(storage_path('app/documents/penelitian'), $filename);
+                $filenames[] = $filename;
+            } else {
+                continue;
             }
-        } else {
-            return 'Tidak ada file yang dipilih.';
         }
-
-        $rencana->lampiran = $filenames;
-        $rencana->save();
-
-        $res = [
-            "rencana" => $rencana,
-            "message" => "Lampiran added successfully"
-        ];
-
-        return response()->json($res, 200);
+    } else {
+        return response()->json(['error' => 'No files selected'], 400);
     }
 
-    public function editOrasi(Request $request)
-    {
-        
-    }
+    // Update $rencana->lampiran with new filenames
+    $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
+    $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
 
-    public function deleteOrasi($id)
-    {
-        
-    }
-    //END OF METHOD A
+    $rencana->save();
 
-};
+    $res = [
+        "rencana" => $rencana,
+        "message" => "Lampiran added successfully"
+    ];
+
+    return response()->json($res, 200);
+}
+
+
+
+
+}
