@@ -197,6 +197,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         //BAGIAN D
         $router->get('/buku-internasional/{id}', 'PenelitianController@getBukuInternasional');
         $router->post('/buku-internasional', 'PenelitianController@postBukuInternasional');
+
+        //BAGIAN M
+        $router->get('/pembicara-seminar/{id}', 'PenelitianController@getPembicaraSeminar');
+        $router->post('/pembicara-seminar', 'PenelitianController@postPembicaraSeminar');
+
+        //BAGIAN N
+        $router->get('/penyajian-makalah/{id}', 'PenelitianController@getPenyajianMakalah');
+        $router->post('/penyajian-makalah', 'PenelitianController@postPenyajianMakalah');
     });
 
 
