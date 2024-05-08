@@ -104,17 +104,17 @@ class PendidikanController extends Controller
         $id_rencana = $request->get('id_rencana');
 
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-        $id_dosen = $rencana->id_dosen;
+        // $id_dosen = $rencana->id_dosen;
 
         $filenames = [];
 
-        if ($request->file()) {
+        if ($request->file('fileInput')) {
 
             $files = $request->file('fileInput');
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_pendidikan_' . time() . '.' . $extension;
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_pendidikan_' . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pendidikan'), $filename);
                     $filenames[] = $filename;
                 } else {
