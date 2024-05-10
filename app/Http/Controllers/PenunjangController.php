@@ -58,6 +58,41 @@ class PenunjangController extends Controller
             ->where('rencana.sub_rencana', 'adhoc')
             ->get();
 
+        // BAGIAN I
+        $ketuapanitia = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
+            ->where('rencana.sub_rencana', 'ketua_panitia')
+            ->get();
+
+        // BAGIAN J
+        $anggotapanitia = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
+            ->where('rencana.sub_rencana', 'anggota_panitia')
+            ->get();
+
+        // BAGIAN K
+        $pengurusyayasan = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jabatan', 'rencana.lampiran')
+            ->where('rencana.sub_rencana', 'pengurus_yayasan')
+            ->get();
+
+        // BAGIAN L
+        $asosiasi = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jenis_tingkatan', 'detail_penunjang.jabatan', 'rencana.lampiran')
+            ->where('rencana.sub_rencana', 'asosiasi')
+            ->get();
+
+        // BAGIAN M
+        $seminar = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
+            ->where('rencana.sub_rencana', 'seminar')
+            ->get();
+
+        // BAGIAN N
+        $reviewer = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.lampiran')
+            ->where('rencana.sub_rencana', 'reviewer')
+            ->get();
 
         // Kembalikan data dalam bentuk yang sesuai untuk ditampilkan di halaman
         return response()->json([
@@ -69,6 +104,12 @@ class PenunjangController extends Controller
             'nonstruktural' => $nonstruktural,
             'redaksi' => $redaksi,
             'adhoc' => $adhoc,
+            'ketuapanitia' => $ketuapanitia,
+            'anggotapanitia' => $anggotapanitia,
+            'pengurusyayasan' => $pengurusyayasan,
+            'asosiasi' => $asosiasi,
+            'seminar' => $seminar,
+            'reviewer' => $reviewer
         ], 200);
     }
 
@@ -86,7 +127,6 @@ class PenunjangController extends Controller
     public function postAkademik(Request $request)
     {
         $request->all();
-        // dd($request->all());
         $id_rencana = $request->get('id_rencana');
 
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
@@ -97,8 +137,8 @@ class PenunjangController extends Controller
         if ($request->file()) { 
             $file = $request->file('fileInput');
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'' . $id_dosen . '_penunjang' . time() . '.' . $extension;
-            $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen  . '_' . time() . '.' . $extension;
+            $file->move(app()->basePath('storage/documents/penunjang/akademik'), $filename);
             $filenames[] = $filename; 
         } else {
             return 'Tidak ada file yang dipilih.';
@@ -137,7 +177,6 @@ class PenunjangController extends Controller
     public function postBimbingan(Request $request)
     {
         $request->all();
-        // dd($request->all());
         $id_rencana = $request->get('id_rencana');
 
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
@@ -148,8 +187,8 @@ class PenunjangController extends Controller
         if ($request->file()) { 
             $file = $request->file('fileInput');
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'' . $id_dosen . '_penunjang' . time() . '.' . $extension;
-            $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+            $file->move(app()->basePath('storage/documents/penunjang/bimbingan'), $filename);
             $filenames[] = $filename; 
         } else {
             return 'Tidak ada file yang dipilih.';
@@ -201,8 +240,8 @@ class PenunjangController extends Controller
           foreach ($files as $file) {
               if ($file->isValid()) {
                   $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-                  $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+                  $file->move(app()->basePath('storage/documents/penunjang/ukm'), $filename);
                   $filenames[] = $filename;
               } else {
                   continue;
@@ -260,8 +299,8 @@ class PenunjangController extends Controller
           foreach ($files as $file) {
               if ($file->isValid()) {
                   $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-                  $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+                  $file->move(app()->basePath('storage/documents/penunjang/sosial'), $filename);
                   $filenames[] = $filename;
               } else {
                   continue;
@@ -320,8 +359,8 @@ class PenunjangController extends Controller
           foreach ($files as $file) {
               if ($file->isValid()) {
                   $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-                  $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+                  $file->move(app()->basePath('storage/documents/penunjang/struktural'), $filename);
                   $filenames[] = $filename;
               } else {
                   continue;
@@ -381,8 +420,8 @@ class PenunjangController extends Controller
           foreach ($files as $file) {
               if ($file->isValid()) {
                   $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-                  $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+                  $file->move(app()->basePath('storage/documents/penunjang/nonstruktural'), $filename);
                   $filenames[] = $filename;
               } else {
                   continue;
@@ -441,8 +480,8 @@ class PenunjangController extends Controller
           foreach ($files as $file) {
               if ($file->isValid()) {
                   $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-                  $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+                  $file->move(app()->basePath('storage/documents/penunjang/redaksi'), $filename);
                   $filenames[] = $filename;
               } else {
                   continue;
@@ -500,8 +539,8 @@ class PenunjangController extends Controller
           foreach ($files as $file) {
               if ($file->isValid()) {
                   $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-                  $file->move(app()->basePath('storage/documents/penunjang'), $filename);
+                  $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
+                  $file->move(app()->basePath('storage/documents/penunjang/adhoc'), $filename);
                   $filenames[] = $filename;
               } else {
                   continue;
@@ -707,13 +746,13 @@ class PenunjangController extends Controller
     //Handler L. Menjadi Pengurus/Anggota Asosiasi Profesi
     public function getAsosiasi($id)
     {
-        $akademik = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+        $asosiasi = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jenis_tingkatan', 'detail_penunjang.jabatan', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'asosiasi')
             ->where('id_dosen', $id)
             ->get();
 
-        return response()->json($akademik, 200);
+        return response()->json($asosiasi, 200);
     }
     public function postAsosiasi(Request $request)
     {
@@ -765,13 +804,13 @@ class PenunjangController extends Controller
     //Handler M. Peserta seminar/workshop/kursus berdasar penugasan pimpinan
     public function getSeminar($id)
     {
-        $akademik = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+        $seminar = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'seminar')
             ->where('id_dosen', $id)
             ->get();
 
-        return response()->json($akademik, 200);
+        return response()->json($seminar, 200);
     }
     public function postSeminar(Request $request)
     {
@@ -824,13 +863,13 @@ class PenunjangController extends Controller
     //Handler N. Reviewer jurnal ilmiah , proposal Hibah dll
     public function getReviewer($id)
     {
-        $akademik = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+        $reviewer = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'reviewer')
             ->where('id_dosen', $id)
             ->get();
 
-        return response()->json($akademik, 200);
+        return response()->json($reviewer, 200);
     }
     public function postReviewer(Request $request)
     {
