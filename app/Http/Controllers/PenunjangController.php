@@ -130,24 +130,34 @@ class PenunjangController extends Controller
         $id_rencana = $request->get('id_rencana');
 
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-        $id_dosen = $rencana->id_dosen;
+        $id_dosen = Rencana::where('id_rencana', $id_rencana)->value('id_dosen');
+        // $id_dosen = $rencana->id_dosen;
 
         $filenames = [];
         
-        if ($request->file()) { 
-            $file = $request->file('fileInput');
-            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen  . '_' . time() . '.' . $extension;
-            $file->move(app()->basePath('storage/documents/penunjang/akademik'), $filename);
-            $filenames[] = $filename; 
+        if ($request->file('fileInput')) { 
+
+            $files = $request->file('fileInput');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen  . '_' . time() . '.' . $extension;
+                    // $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/penunjang/akademik'), $filename);
+                    $filenames[] = $filename; 
+                } else {
+                    continue;
+                }
+            }
         } else {
             return 'Tidak ada file yang dipilih.';
         }
+            
         $rencana->lampiran = $filenames; 
         $rencana->save();
 
         $res = [
-            "rencana" => $rencana,
+            "lampiran" => $filenames,
             "message" => "Lampiran added successfully"
         ];
 
