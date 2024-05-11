@@ -254,120 +254,120 @@ class PenelitianController extends Controller
         return response()->json($res, 202);
     }
 
-//method M
-public function getPembicaraSeminar($id)
-    {
-        $pembicara_seminar = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
-            ->where('rencana.sub_rencana', 'pembicara_seminar')
-            ->where('id_dosen', $id)
-            ->get();
+    //method M
+    public function getPembicaraSeminar($id)
+        {
+            $pembicara_seminar = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+                ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+                ->where('rencana.sub_rencana', 'pembicara_seminar')
+                ->where('id_dosen', $id)
+                ->get();
 
-        return response()->json($pembicara_seminar, 200);
-    }
-
-    public function postPembicaraSeminar(Request $request)
-{
-    // Retrieve the id_rencana from the request payload
-    $id_rencana = $request->input('id_rencana');
-
-    // Check if Rencana exists with the provided id_rencana
-    $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-
-    if (!$rencana) {
-        return response()->json(['error' => 'Rencana not found'], 404);
-    }
-
-    $id_dosen = $rencana->id_dosen;
-
-    $filenames = [];
-
-    if ($request->hasFile('fileInput')) {
-        $files = $request->file('fileInput');
-        foreach ($files as $file) {
-            if ($file->isValid()) {
-                $extension = $file->getClientOriginalExtension();
-                $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . $id_dosen . '_Pembicara_Seminar_' . time() . '.' . $extension;
-                $file->move(storage_path('app/documents/penelitian'), $filename);
-                $filenames[] = $filename;
-            } else {
-                continue;
-            }
+            return response()->json($pembicara_seminar, 200);
         }
-    } else {
-        return response()->json(['error' => 'No files selected'], 400);
-    }
 
-    // Update $rencana->lampiran with new filenames
-    $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
-    $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
-
-    $rencana->save();
-
-    $res = [
-        "rencana" => $rencana,
-        "message" => "Lampiran added successfully"
-    ];
-
-    return response()->json($res, 200);
-}
-
-//method N
-public function getPenyajianMakalah($id)
+        public function postPembicaraSeminar(Request $request)
     {
-        $penyajian_makalah = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_wilayah', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
-            ->where('rencana.sub_rencana', 'penyajian_makalah')
-            ->where('id_dosen', $id)
-            ->get();
+        // Retrieve the id_rencana from the request payload
+        $id_rencana = $request->input('id_rencana');
 
-        return response()->json($penyajian_makalah, 200);
-    }
+        // Check if Rencana exists with the provided id_rencana
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
 
-    public function postPenyajianMakalah(Request $request)
-{
-    // Retrieve the id_rencana from the request payload
-    $id_rencana = $request->input('id_rencana');
-
-    // Check if Rencana exists with the provided id_rencana
-    $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-
-    if (!$rencana) {
-        return response()->json(['error' => 'Rencana not found'], 404);
-    }
-
-    $id_dosen = $rencana->id_dosen;
-
-    $filenames = [];
-
-    if ($request->hasFile('fileInput')) {
-        $files = $request->file('fileInput');
-        foreach ($files as $file) {
-            if ($file->isValid()) {
-                $extension = $file->getClientOriginalExtension();
-                $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . $id_dosen . '_Penyajian_Makalah_' . time() . '.' . $extension;
-                $file->move(storage_path('app/documents/penelitian'), $filename);
-                $filenames[] = $filename;
-            } else {
-                continue;
-            }
+        if (!$rencana) {
+            return response()->json(['error' => 'Rencana not found'], 404);
         }
-    } else {
-        return response()->json(['error' => 'No files selected'], 400);
+
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->hasFile('fileInputM')) {
+            $files = $request->file('fileInputM');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '' . $id_dosen . '_Buku_Internasional' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/penelitian'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    return response()->json(['error' => 'Something went wrong'], 401);
+                }
+            }
+        } else {
+            return response()->json(['error' => 'No files selected'], 400);
+        }
+
+        // Update $rencana->lampiran with new filenames
+        $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
+        $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 202);
     }
 
-    // Update $rencana->lampiran with new filenames
-    $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
-    $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+    //method N
+    public function getPenyajianMakalah($id)
+        {
+            $penyajian_makalah = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+                ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_wilayah', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+                ->where('rencana.sub_rencana', 'penyajian_makalah')
+                ->where('id_dosen', $id)
+                ->get();
 
-    $rencana->save();
+            return response()->json($penyajian_makalah, 200);
+        }
 
-    $res = [
-        "rencana" => $rencana,
-        "message" => "Lampiran added successfully"
-    ];
+        public function postPenyajianMakalah(Request $request)
+    {
+        // Retrieve the id_rencana from the request payload
+        $id_rencana = $request->input('id_rencana');
 
-    return response()->json($res, 200);
-}
+        // Check if Rencana exists with the provided id_rencana
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+
+        if (!$rencana) {
+            return response()->json(['error' => 'Rencana not found'], 404);
+        }
+
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->hasFile('fileInputN')) {
+            $files = $request->file('fileInputN');
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '' . $id_dosen . '_Penyajian_Makalah' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/penelitian'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    return response()->json(['error' => 'Something went wrong'], 401);
+                }
+            }
+        } else {
+            return response()->json(['error' => 'No files selected'], 400);
+        }
+
+        // Update $rencana->lampiran with new filenames
+        $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
+        $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+
+        $rencana->save();
+
+        $res = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 202);
+    }
 
 }
