@@ -194,6 +194,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     // START ROUTE FOR PENELITIAN
     $router->group(['prefix' => 'penelitian'], function () use ($router) {
+        //BAGIAN A
+        $router->get('/penelitan-kelompok/{id}', 'PenelitianController@getPenelitianKelompok($id)');
+        $router->post('/penelitian-kelompok', 'PenelitianController@postPenelitianKelompok');
+
+        //BAGIAN B
+        $router->get('/penelitian-mandiri/{id}', 'PeneltianController@getPenelitianMandiri($id)');
+        $router->post('/penelitian-mandiri', 'PenelitianController@postPenelitianMandiri');
+
         //BAGIAN D
         $router->get('/buku-internasional/{id}', 'PenelitianController@getBukuInternasional');
         $router->post('/buku-internasional', 'PenelitianController@postBukuInternasional');

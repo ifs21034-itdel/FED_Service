@@ -118,6 +118,84 @@ class PenelitianController extends Controller
         ], 200);
     }
 
+    // Method A
+    public function getPenelitianKelompok($id)
+    {
+        $penelitian_kelompok = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_kelompok')
+            ->where('id_dosen', $id)
+            ->get();
+
+        return response()->json($penelitian_kelompok, 200);
+    }
+
+    public function postPenelitianKelompok(Request $request)
+    {
+        $id_rencana = $request->input('id_rencana');
+        $rencana = Rencana::where('id_rencana', $id_rencana)->first();
+
+        if(!$rencana){
+            return response()->json(['error' => 'Rencana not found'], 404);
+        }
+
+        $id_dosen = $rencana->id_dosen;
+
+        $filenames = [];
+
+        if ($request->hasFile('fileInputA')){
+            $files = $request->file('fileInputA');
+            foreach($files as $file){
+                if ($file->isValid()){
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '' . $id_dosen . 'Penelitian_KElompok' . time() . '.' . $extension;
+                    $file->move(app()->basePath('storage/documents/penelitian'), $filename);
+                    $filenames[] = $filename;
+                } else {
+                    return response()->json(['error' => 'Something went wrong'], 401);
+                }
+            }
+        } else {
+            return response()->json(['error' => 'No files selected'], 400);
+        }
+
+        $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
+        $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+
+        $rencana->save();
+
+        $res  = [
+            "rencana" => $rencana,
+            "message" => "Lampiran added successfully"
+        ];
+
+        return response()->json($res, 202);
+    }
+
+    // Method B
+    public function getPenelitianMandiri($id)
+    {
+        $penelitian_mandiri = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'penelitian_mandiri')
+            ->where('id_dosen', $id)
+            ->get();
+
+        return response()->json($penelitian_mandiri, 200);
+    }
+
+    // Method C
+    public function getBukuTerbit($id)
+    {
+        $buku_terbit = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan','detail_penelitian.peran','rencana.sks_terhitung', 'rencana.asesor1_frk')
+            ->where('rencana.sub_rencana', 'buku_terbit')
+            ->where('id_dosen', $id)
+            ->get();
+
+        return response()->json($buku_terbit, 200);
+    }
+
     // Method D
     public function getBukuInternasional($id)
     {
