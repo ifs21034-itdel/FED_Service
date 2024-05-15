@@ -151,7 +151,7 @@ class PendidikanController extends Controller
     public function getPraktikum($id)
     {
         $praktikum = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'praktikum')
             ->where('id_dosen', $id)
             ->get();
@@ -209,7 +209,7 @@ class PendidikanController extends Controller
     public function getBimbingan($id)
     {
         $bimbingan = Rencana::join('detail_pendidikan', 'rencana.id_rencana', "=", 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'bimbingan')
             ->where('id_dosen', $id)
             ->get();
@@ -270,7 +270,7 @@ class PendidikanController extends Controller
     public function getSeminar($id)
     {
         $seminar = Rencana::join('detail_pendidikan', 'rencana.id_rencana', "=", 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'seminar')
             ->where('id_dosen', $id)
             ->get();
@@ -331,7 +331,7 @@ class PendidikanController extends Controller
     public function getTugasAkhir($id)
     {
         $tugasAkhir = Rencana::join('detail_pendidikan', 'rencana.id_rencana', "=", 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'tugasAkhir')
             ->where('id_dosen', $id)
             ->get();
