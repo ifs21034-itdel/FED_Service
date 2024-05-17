@@ -39,25 +39,25 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/praktikum', 'PendidikanController@postPraktikum');
         $router->delete('/praktikum/{id}', 'PendidikanController@deletePraktikum');
         $router->post('/edit/praktikum', 'PendidikanController@editPraktikum');
-        
+
         //bimbingan
         $router->get('/bimbingan/{id}', 'PendidikanController@getBimbingan');
         $router->post('/bimbingan', 'PendidikanController@postBimbingan');
         $router->delete('/bimbingan/{id}', 'PendidikanController@deleteBimbingan');
         $router->post('/edit/bimbingan', 'PendidikanController@editBimbingan');
-        
+
         //seminar
         $router->get('/seminar/{id}', 'PendidikanController@getSeminar');
         $router->post('/seminar', 'PendidikanController@postSeminar');
         $router->delete('/seminar/{id}', 'PendidikanController@deleteSeminar');
         $router->post('/edit/seminar', 'PendidikanController@editSeminar');
-        
+
         //Tugas Akhir
         $router->get('/tugasAkhir/{id}', 'PendidikanController@getTugasakhir');
         $router->post('/tugasAkhir', 'PendidikanController@postTugasakhir');
         $router->delete('/tugasAkhir/{id}', 'PendidikanController@deleteTugasakhir');
         $router->post('/edit/tugasAkhir', 'PendidikanController@editTugasakhir');
-        
+
         //proposal
         $router->get('/proposal/{id}', 'PendidikanController@getProposal');
         $router->post('/proposal', 'PendidikanController@postProposal');
@@ -194,25 +194,23 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     // START ROUTE FOR PENELITIAN
     $router->group(['prefix' => 'penelitian'], function () use ($router) {
+        //UPLOAD LAMPIRAN
+        $router->post('/upload-lampiran', 'PenelitianController@postLampiran');
+
         //BAGIAN A
         $router->get('/penelitan-kelompok/{id}', 'PenelitianController@getPenelitianKelompok($id)');
-        $router->post('/penelitian-kelompok', 'PenelitianController@postPenelitianKelompok');
 
         //BAGIAN B
         $router->get('/penelitian-mandiri/{id}', 'PeneltianController@getPenelitianMandiri($id)');
-        $router->post('/penelitian-mandiri', 'PenelitianController@postPenelitianMandiri');
 
         //BAGIAN D
         $router->get('/buku-internasional/{id}', 'PenelitianController@getBukuInternasional');
-        $router->post('/buku-internasional', 'PenelitianController@postBukuInternasional');
 
         //BAGIAN M
         $router->get('/pembicara-seminar/{id}', 'PenelitianController@getPembicaraSeminar');
-        $router->post('/pembicara-seminar', 'PenelitianController@postPembicaraSeminar');
 
         //BAGIAN N
         $router->get('/penyajian-makalah/{id}', 'PenelitianController@getPenyajianMakalah');
-        $router->post('/penyajian-makalah', 'PenelitianController@postPenyajianMakalah');
     });
 
 
