@@ -213,5 +213,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/penyajian-makalah/{id}', 'PenelitianController@getPenyajianMakalah');
     });
 
+    $router->group(['prefix' => 'pengabdian'], function() use ($router){
+
+        //UPLOAD LAMPIRAN
+        $router->post('/upload-lampiran', 'PengabdianController@postLampiran');
+    });
+
 
 });
