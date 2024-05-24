@@ -442,7 +442,7 @@ class PendidikanController extends Controller
     public function getProposal($id)
     {
         $proposal = Rencana::join('detail_pendidikan', 'rencana.id_rencana', "=", 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'proposal')
             ->where('id_dosen', $id)
             ->get();
@@ -504,7 +504,7 @@ class PendidikanController extends Controller
     public function getRendah($id)
     {
         $rencana = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'bimbing_rendah')
             ->where('id_dosen', $id)
             ->get();
@@ -564,7 +564,7 @@ class PendidikanController extends Controller
     public function getKembang($id)
     {
         $rencana = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_sap', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_sap', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'pengembangan')
             ->where('id_dosen', $id)
             ->get();
@@ -625,7 +625,7 @@ class PendidikanController extends Controller
     public function getCangkok($id)
     {
         $cangkok = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'cangkok')
             ->where('id_dosen', $id)
             ->get();
@@ -687,7 +687,7 @@ class PendidikanController extends Controller
     public function getKoordinator($id)
     {
         $koordinator = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.lampiran')
             ->where('rencana.sub_rencana', 'koordinator')
             ->where('id_dosen', $id)
             ->get();
