@@ -80,13 +80,36 @@ class PenelitianController extends Controller
     }
 
     //HANDLER DELETE LAMPIRAN (DELETE LAMPIRAN WITH ENCODED BASE64 URL)
-    public function deleteFileLampiran($idRencana){
+    public function deleteFileLampiran($idRencana, $fileName)
+    {
         $rencana = Rencana::where('id_rencana', $idRencana)->first();
-        // $fileName = base64_decode($fileName);
-        $fileName = "Proposal_KP_22_1435_Penelitian_Kelompok1716547132.pdf";
+        $fileName = base64_decode($fileName);
+
         $lampiran = json_decode($rencana->lampiran);
 
+        $result = array_filter($lampiran, function ($value) use ($fileName) {
+            return $value !== $fileName;
+        });
 
+        if(sizeof(array_values($result)) == sizeof($lampiran)){
+            return response()->json(["error_message" => "file not found"], 404);
+        }
+
+        $lampiran = array_values($result);
+
+        unlink(storage_path("documents/penelitian/" . $fileName));
+
+        if(sizeof($lampiran) == 0){
+            $rencana->lampiran = null;
+        } else {
+            // Encode the array back to JSON if needed
+            $rencana->lampiran = json_encode($lampiran);
+        }
+
+        // Save the changes to the database if $rencana is an Eloquent model
+        $rencana->save();
+
+        return response()->json($lampiran, 200);
     }
 
     // HANDLER A

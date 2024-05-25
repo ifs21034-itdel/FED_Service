@@ -207,7 +207,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         //GET FILE LAMPIRAN
         $router->get('/get-lampiran/{fileName}', 'PenelitianController@getFileLampiran');
-        $router->delete('/delete-lampiran/{fileName}', 'PenelitianController@deleteFileLampiran');
+        $router->delete('/lampiran/{idRencana}/delete/{fileName}', 'PenelitianController@deleteFileLampiran');
 
         //BAGIAN A
         $router->get('/penelitan-kelompok/{id}', 'PenelitianController@getPenelitianKelompok($id)');
