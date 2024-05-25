@@ -205,6 +205,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         //UPLOAD LAMPIRAN
         $router->post('/upload-lampiran', 'PenelitianController@postLampiran');
 
+        //GET FILE LAMPIRAN
+        $router->get('/get-lampiran/{fileName}', 'PenelitianController@getFileLampiran');
+        $router->delete('/delete-lampiran/{fileName}', 'PenelitianController@deleteFileLampiran');
+
         //BAGIAN A
         $router->get('/penelitan-kelompok/{id}', 'PenelitianController@getPenelitianKelompok($id)');
 

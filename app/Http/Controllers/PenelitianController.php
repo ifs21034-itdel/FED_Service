@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DetailPenelitian;
 use App\Models\Rencana;
+use Illuminate\Support\Facades\Response;
 
 
 class PenelitianController extends Controller
 {
     //HANDLER UPLOAD LAMPIRAN
-    public function postLampiran(Request $request){
+    public function postLampiran(Request $request)
+    {
         // Retrieve the id_rencana from the request payload
         $id_rencana = $request->get('id_rencana');
         $jenis_penelitian = $request->get("jenis_penelitian");
@@ -43,7 +45,7 @@ class PenelitianController extends Controller
         }
 
         // Update $rencana->lampiran with new filenames
-        if($rencana->lampiran == null){
+        if ($rencana->lampiran == null) {
             $rencana->lampiran = [];
         } else {
             $rencana->lampiran = json_decode($rencana->lampiran);
@@ -59,9 +61,33 @@ class PenelitianController extends Controller
         ];
 
         return response()->json($res, 202);
-
     }
     //END OF HANDLER POST LAMPIRAN
+
+    //HANDLER GET LAMPIRAN (DOWNLOAD LAMPIRAN WITH ENCODED BASE64 URL)
+    public function getFileLampiran($fileName)
+    {
+        $file = base64_decode($fileName);
+        $filePath = storage_path('documents/penelitian/' . $file);
+
+        $name = basename($filePath);
+        $mimeType = mime_content_type($filePath);
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . $name . '"'
+        ]);
+    }
+
+    //HANDLER DELETE LAMPIRAN (DELETE LAMPIRAN WITH ENCODED BASE64 URL)
+    public function deleteFileLampiran($idRencana){
+        $rencana = Rencana::where('id_rencana', $idRencana)->first();
+        // $fileName = base64_decode($fileName);
+        $fileName = "Proposal_KP_22_1435_Penelitian_Kelompok1716547132.pdf";
+        $lampiran = json_decode($rencana->lampiran);
+
+
+    }
 
     // HANDLER A
     public function getPenelitianKelompok($id)
