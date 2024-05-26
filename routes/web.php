@@ -28,68 +28,43 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     //START ROUTE FOR PENDIDIKAN
     $router->group(['prefix' => 'pendidikan'], function () use ($router) {
+
         // //teori
         $router->get('/teori/{id}', 'PendidikanController@getTeori');
-        // $router->post('/teori', 'PendidikanController@postTeori');
-        // $router->delete('/teori/{id}', 'PendidikanController@deleteTeori');
-        // $router->post('/edit/teori', 'PendidikanController@editTeori');
 
         // //praktikum
         $router->get('/praktikum/{id}', 'PendidikanController@getPraktikum');
-        // $router->post('/praktikum', 'PendidikanController@postPraktikum');
-        // $router->delete('/praktikum/{id}', 'PendidikanController@deletePraktikum');
-        // $router->post('/edit/praktikum', 'PendidikanController@editPraktikum');
 
         // //bimbingan
         $router->get('/bimbingan/{id}', 'PendidikanController@getBimbingan');
-        // $router->post('/bimbingan', 'PendidikanController@postBimbingan');
-        // $router->delete('/bimbingan/{id}', 'PendidikanController@deleteBimbingan');
-        // $router->post('/edit/bimbingan', 'PendidikanController@editBimbingan');
 
         // //seminar
         $router->get('/seminar/{id}', 'PendidikanController@getSeminar');
-        // $router->post('/seminar', 'PendidikanController@postSeminar');
-        // $router->delete('/seminar/{id}', 'PendidikanController@deleteSeminar');
-        // $router->post('/edit/seminar', 'PendidikanController@editSeminar');
 
         // //Tugas Akhir
         $router->get('/tugasAkhir/{id}', 'PendidikanController@getTugasakhir');
-        // $router->post('/tugasAkhir', 'PendidikanController@postTugasakhir');
-        // $router->delete('/tugasAkhir/{id}', 'PendidikanController@deleteTugasakhir');
-        // $router->post('/edit/tugasAkhir', 'PendidikanController@editTugasakhir');
 
         // //proposal
         $router->get('/proposal/{id}', 'PendidikanController@getProposal');
-        // $router->post('/proposal', 'PendidikanController@postProposal');
-        // $router->delete('/proposal/{id}', 'PendidikanController@deleteProposal');
-        // $router->post('/edit/proposal', 'PendidikanController@editProposal');
 
         // // rendah
         $router->get('/rendah/{id}', 'PendidikanController@getRendah');
-        // $router->post('/rendah', 'PendidikanController@postRendah');
-        // $router->delete('/rendah/{id}', 'PendidikanController@deleteRendah');
-        // $router->post('/edit/rendah', 'PendidikanController@editRendah');
 
         // // kembang
         $router->get('/kembang/{id}', 'PendidikanController@getKembang');
-        // $router->post('/kembang', 'PendidikanController@postKembang');
-        // $router->delete('/kembang/{id}', 'PendidikanController@deleteKembang');
-        // $router->post('/edit/kembang', 'PendidikanController@editKembang');
 
         // //cangkok
         $router->get('/cangkok/{id}', 'PendidikanController@getCangkok');
-        // $router->post('/cangkok', 'PendidikanController@postCangkok');
-        // $router->delete('/cangkok/{id}', 'PendidikanController@deleteCangkok');
-        // $router->post('/edit/cangkok', 'PendidikanController@editCangkok');
 
         // //koordinator
         $router->get('/koordinator/{id}', 'PendidikanController@getKoordinator');
-        // $router->post('/koordinator', 'PendidikanController@postKoordinator');
-        // $router->delete('/koordinator/{id}', 'PendidikanController@deleteKoordinator');
-        // $router->post('/edit/koordinator', 'PendidikanController@editKoordinator');
 
         //UPLOAD LAMPIRAN
         $router->post('/upload-lampiran', 'PendidikanController@postLampiran');
+
+        //GET FILE LAMPIRAN
+        $router->get('/get-lampiran/{fileName}', 'PendidikanController@getFileLampiran');
+        $router->delete('/lampiran/{idRencana}/delete/{fileName}', 'PendidikanController@deleteFileLampiran');
     });
     //END ROUTE FOR PENDIDIKAN
 
