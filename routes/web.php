@@ -229,6 +229,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         //UPLOAD LAMPIRAN
         $router->post('/upload-lampiran', 'PengabdianController@postLampiran');
+        //GET FILE LAMPIRAN
+        $router->get('/get-lampiran/{fileName}', 'PengabdianController@getFileLampiran');
+        $router->delete('/lampiran/{idRencana}/delete/{fileName}', 'PengabdianController@deleteFileLampiran');
     });
 
 

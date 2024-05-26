@@ -13,7 +13,7 @@ class PengabdianController extends Controller
     public function postLampiran(Request $request){
         // Retrieve the id_rencana from the request payload
         $id_rencana = $request->get('id_rencana');
-        $jenis_penelitian = $request->get("jenis_pengabdian");
+        $jenis_pengabdian = $request->get("jenis_pengabdian");
 
         // Check if Rencana exists with the provided id_rencana
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
@@ -31,7 +31,7 @@ class PengabdianController extends Controller
             foreach ($files as $file) {
                 if ($file->isValid()) {
                     $extension = $file->getClientOriginalExtension();
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . $id_dosen . '_' . $jenis_penelitian . time() . '.' . $extension;
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . $id_dosen . '_' . $jenis_pengabdian . time() . '.' . $extension;
                     $file->move(app()->basePath('storage/documents/pengabdian'), $filename);
                     $filenames[] = $filename;
                 } else {
@@ -43,8 +43,13 @@ class PengabdianController extends Controller
         }
 
         // Update $rencana->lampiran with new filenames
-        $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
-        $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+        if ($rencana->lampiran == null) {
+            $rencana->lampiran = [];
+        } else {
+            $rencana->lampiran = json_decode($rencana->lampiran);
+        }
+
+        $rencana->lampiran = json_encode(array_merge($rencana->lampiran, $filenames));
 
         $rencana->save();
 
@@ -57,4 +62,52 @@ class PengabdianController extends Controller
 
     }
     //END OF HANDLER POST LAMPIRAN
+
+    //HANDLER GET LAMPIRAN (DOWNLOAD LAMPIRAN WITH ENCODED BASE64 URL)
+    public function getFileLampiran($fileName)
+    {
+        $file = base64_decode($fileName);
+        $filePath = storage_path('documents/pengabdian/' . $file);
+
+        $name = basename($filePath);
+        $mimeType = mime_content_type($filePath);
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . $name . '"'
+        ]);
+    }
+
+    //HANDLER DELETE LAMPIRAN (DELETE LAMPIRAN WITH ENCODED BASE64 URL)
+    public function deleteFileLampiran($idRencana, $fileName)
+    {
+        $rencana = Rencana::where('id_rencana', $idRencana)->first();
+        $fileName = base64_decode($fileName);
+
+        $lampiran = json_decode($rencana->lampiran);
+
+        $result = array_filter($lampiran, function ($value) use ($fileName) {
+            return $value !== $fileName;
+        });
+
+        if(sizeof(array_values($result)) == sizeof($lampiran)){
+            return response()->json(["error_message" => "file not found"], 404);
+        }
+
+        $lampiran = array_values($result);
+
+        unlink(storage_path("documents/pengabdian/" . $fileName));
+
+        if(sizeof($lampiran) == 0){
+            $rencana->lampiran = null;
+        } else {
+            // Encode the array back to JSON if needed
+            $rencana->lampiran = json_encode($lampiran);
+        }
+
+        // Save the changes to the database if $rencana is an Eloquent model
+        $rencana->save();
+
+        return response()->json($lampiran, 200);
+    }
 }
