@@ -162,5 +162,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     });
 
     $router->get('/simpulan/{id}', 'SimpulanController@getAll');
+    $router->post('/simpulan/simpan-rencana/{id}', 'SimpulanController@simpanEvaluasi');
 
 });
