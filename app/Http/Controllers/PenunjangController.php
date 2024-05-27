@@ -147,8 +147,13 @@ class PenunjangController extends Controller
         }
 
         // Update $rencana->lampiran with new filenames
-        $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
-        $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+        if ($rencana->lampiran == null) {
+            $rencana->lampiran = [];
+        } else {
+            $rencana->lampiran = json_decode($rencana->lampiran);
+        }
+
+        $rencana->lampiran = json_encode(array_merge($rencana->lampiran, $filenames));
 
         $rencana->save();
 
@@ -162,6 +167,55 @@ class PenunjangController extends Controller
     }
     //END OF HANDLER POST LAMPIRAN
 
+    //HANDLER GET LAMPIRAN (DOWNLOAD LAMPIRAN WITH ENCODED BASE64 URL)
+    public function getFileLampiran($fileName)
+    {
+        $file = base64_decode($fileName);
+        $filePath = storage_path('documents/penunjang/' . $file);
+
+        $name = basename($filePath);
+        $mimeType = mime_content_type($filePath);
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . $name . '"'
+        ]);
+    }
+
+    //HANDLER DELETE LAMPIRAN (DELETE LAMPIRAN WITH ENCODED BASE64 URL)
+    public function deleteFileLampiran($idRencana, $fileName)
+    {
+        $rencana = Rencana::where('id_rencana', $idRencana)->first();
+        $fileName = base64_decode($fileName);
+
+        $lampiran = json_decode($rencana->lampiran);
+
+        $result = array_filter($lampiran, function ($value) use ($fileName) {
+            return $value !== $fileName;
+        });
+
+        if(sizeof(array_values($result)) == sizeof($lampiran)){
+            return response()->json(["error_message" => "file not found"], 404);
+        }
+
+        $lampiran = array_values($result);
+
+        unlink(storage_path("documents/penunjang/" . $fileName));
+
+        if(sizeof($lampiran) == 0){
+            $rencana->lampiran = null;
+        } else {
+            // Encode the array back to JSON if needed
+            $rencana->lampiran = json_encode($lampiran);
+        }
+
+        // Save the changes to the database if $rencana is an Eloquent model
+        $rencana->save();
+
+        return response()->json($lampiran, 200);
+    }
+
+
     //Handler A. Bimbingan Akademik
     public function getAkademik($id)
     {
@@ -173,56 +227,7 @@ class PenunjangController extends Controller
 
         return response()->json($akademik, 200);
     }
-    // public function postAkademik(Request $request)
-    // {
-    //     $request->all();
-    //     $id_rencana = $request->get('id_rencana');
-
-    //     $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //     $id_dosen = Rencana::where('id_rencana', $id_rencana)->value('id_dosen');
-    //     // $id_dosen = $rencana->id_dosen;
-
-    //     $filenames = [];
-        
-    //     if ($request->file('fileInput')) { 
-
-    //         $files = $request->file('fileInput');
-    //         foreach ($files as $file) {
-    //             if ($file->isValid()) {
-    //                 $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //                 $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen  . '_' . time() . '.' . $extension;
-    //                 // $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . time() . '.' . $extension;
-    //                 $file->move(app()->basePath('storage/documents/penunjang/akademik'), $filename);
-    //                 $filenames[] = $filename; 
-    //             } else {
-    //                 continue;
-    //             }
-    //         }
-    //     } else {
-    //         return 'Tidak ada file yang dipilih.';
-    //     }
-            
-    //     $rencana->lampiran = $filenames; 
-    //     $rencana->save();
-
-    //     $res = [
-    //         "lampiran" => $filenames,
-    //         "message" => "Lampiran added successfully"
-    //     ];
-
-    //     return response()->json($res, 200);
-    // }
-    // public function editAkademik(Request $request)
-    // {
-        
-    // }
-    // public function deleteAkademik($id)
-    // {
-        
-    // }
-
-
-    //Handler B. Bimbingan dan Konseling
+    
     public function getBimbingan($id)
     {
         $bimbingan = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
@@ -233,45 +238,7 @@ class PenunjangController extends Controller
 
         return response()->json($bimbingan, 200);
     }
-    // public function postBimbingan(Request $request)
-    // {
-    //     $request->all();
-    //     $id_rencana = $request->get('id_rencana');
-
-    //     $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //     $id_dosen = $rencana->id_dosen;
-
-    //     $filenames = [];
-        
-    //     if ($request->file()) { 
-    //         $file = $request->file('fileInput');
-    //         $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //         $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //         $file->move(app()->basePath('storage/documents/penunjang/bimbingan'), $filename);
-    //         $filenames[] = $filename; 
-    //     } else {
-    //         return 'Tidak ada file yang dipilih.';
-    //     }
-    //     $rencana->lampiran = $filenames; 
-    //     $rencana->save();
-
-    //     $res = [
-    //         "rencana" => $rencana,
-    //         "message" => "Lampiran added successfully"
-    //     ];
-
-    //     return response()->json($res, 200);
-    // }
-    // public function editBimbingan(Request $request)
-    // {
-        
-    // }
-    // public function deleteBimbingan($id)
-    // {
-        
-    // }
-
-    //Handler C. Pimpinan Pembinaan UKM
+    
     public function getUkm($id)
     {
         $ukm = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
@@ -283,54 +250,7 @@ class PenunjangController extends Controller
         return response()->json($ukm, 200);
     }
 
-    // public function postUkm(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang/ukm'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editUkm(Request $request)
-    // {
-        
-    // }
-    // public function deleteUkm($id)
-    // {
-        
-    // }
-
-    //Handler D. Pimpinan organisasi sosial intern
+    
     public function getSosial($id)
     {
         $sosial = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
@@ -341,54 +261,6 @@ class PenunjangController extends Controller
 
         return response()->json($sosial, 200);
     }
-
-    // public function postSosial(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang/sosial'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editSosial(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteSosial($id)
-    // {
-        
-    // }
 
     //Handler E. Jabatan Struktural
     public function getStruktural($id)
@@ -401,54 +273,6 @@ class PenunjangController extends Controller
 
         return response()->json($struktural, 200);
     }
-
-    // public function postStruktural(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang/struktural'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editStruktural(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteStruktural($id)
-    // {
-        
-    // }
 
 
     //Handler F. Jabatan non struktural
@@ -463,54 +287,6 @@ class PenunjangController extends Controller
         return response()->json($nonstruktural, 200);
     }
 
-    // public function postNonstruktural(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang/nonstruktural'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editNonstruktural(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteNonstruktural($id)
-    // {
-        
-    // }
-
     //Handler G. Ketua Redaksi Jurnal
     public function getRedaksi($id)
     {
@@ -523,52 +299,6 @@ class PenunjangController extends Controller
         return response()->json($redaksi, 200);
     }
 
-    // public function postRedaksi(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang/redaksi'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editRedaksi(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteRedaksi($id)
-    // {
-        
     // }
     //Handler H. Ketua Ad Hoc
     public function getAdhoc($id)
@@ -582,54 +312,6 @@ class PenunjangController extends Controller
         return response()->json($adhoc, 200);
     }
 
-    // public function postAdhoc(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang/adhoc'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editAdhoc(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteAdhoc($id)
-    // {
-        
-    // }
-
 
     //Handler I. Ketua Panitia Tetap
     public function getKetuaPanitia($id)
@@ -642,51 +324,6 @@ class PenunjangController extends Controller
 
         return response()->json($ketuapanitia, 200);
     }
-    // public function postKetuaPanitia(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-    // public function editKetuaPanitia(Request $request)
-    // {
-        
-    // }
-    // public function deleteKetuaPanitia($id)
-    // {
-        
-    // }
 
     //Handler J. Anggota Panitia Tetap
     public function getAnggotaPanitia($id)
@@ -699,51 +336,6 @@ class PenunjangController extends Controller
 
         return response()->json($anggotapanitia, 200);
     }
-    // public function postAnggotaPanitia(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-    // public function editAnggotaPanitia(Request $request)
-    // {
-        
-    // }
-    // public function deleteAnggotaPanitia($id)
-    // {
-        
-    // }
 
     //Handler K. Menjadi Pengurus Yayasan
     public function getPengurusYayasan($id)
@@ -756,51 +348,6 @@ class PenunjangController extends Controller
 
         return response()->json($anggotapanitia, 200);
     }
-    // public function postPengurusYayasan(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-    // public function editPengurusYayasan(Request $request)
-    // {
-        
-    // }
-    // public function deletePengurusYayasan($id)
-    // {
-        
-    // }
 
     //Handler L. Menjadi Pengurus/Anggota Asosiasi Profesi
     public function getAsosiasi($id)
@@ -813,52 +360,6 @@ class PenunjangController extends Controller
 
         return response()->json($asosiasi, 200);
     }
-    // public function postAsosiasi(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editAsosiasi(Request $request)
-    // {
-        
-    // }
-    // public function deleteAsosiasi($id)
-    // {
-        
-    // }
 
     //Handler M. Peserta seminar/workshop/kursus berdasar penugasan pimpinan
     public function getSeminar($id)
@@ -871,53 +372,6 @@ class PenunjangController extends Controller
 
         return response()->json($seminar, 200);
     }
-    // public function postSeminar(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
-
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-
-    // public function editSeminar(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteSeminar($id)
-    // {
-        
-    // }
 
     //Handler N. Reviewer jurnal ilmiah , proposal Hibah dll
     public function getReviewer($id)
@@ -930,50 +384,5 @@ class PenunjangController extends Controller
 
         return response()->json($reviewer, 200);
     }
-    // public function postReviewer(Request $request)
-    // {
-    //   $request->all();
-    //   $id_rencana = $request->get('id_rencana');
 
-    //   $rencana = Rencana::where('id_rencana', $id_rencana)->first();
-    //   $id_dosen = $rencana->id_dosen;
-
-    //   $filenames = [];
-
-    //   if ($request->file()) {
-
-    //       $files = $request->file('fileInput');
-    //       foreach ($files as $file) {
-    //           if ($file->isValid()) {
-    //               $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    //               $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) .'_' . $id_dosen . '_penunjang_' . time() . '.' . $extension;
-    //               $file->move(app()->basePath('storage/documents/penunjang'), $filename);
-    //               $filenames[] = $filename;
-    //           } else {
-    //               continue;
-    //           }
-    //       }
-    //   } else {
-    //       return 'Tidak ada file yang dipilih.';
-    //   }
-
-    //   $rencana->lampiran = $filenames;
-    //   $rencana->save();
-
-    //   $res = [
-    //       "rencana" => $rencana,
-    //       "message" => "Lampiran added successfully"
-    //   ];
-
-    //   return response()->json($res, 200);
-    // }
-    // public function editReviewer(Request $request)
-    // {
-        
-    // }
-
-    // public function deleteReviewer($id)
-    // {
-        
-    // }
 }
