@@ -231,5 +231,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/upload-lampiran', 'PengabdianController@postLampiran');
     });
 
+    $router->get('/simpulan/{id}', 'SimpulanController@getAll');
 
 });
