@@ -235,12 +235,12 @@ class PendidikanController extends Controller
 
     // public function editTeori(Request $request)
     // {
-        
+
     // }
 
     // public function deleteTeori($id)
     // {
-        
+
     // }
     // //END OF METHOD A
 
@@ -294,11 +294,11 @@ class PendidikanController extends Controller
     // }
     // public function editPraktikum(Request $request)
     // {
-        
+
     // }
     // public function deletePraktikum($id)
     // {
-        
+
     // }
     // //END OF METHOD B
 
@@ -354,12 +354,12 @@ class PendidikanController extends Controller
 
     // public function editBimbingan(Request $request)
     // {
-        
+
     // }
 
     // public function deleteBimbingan($id)
     // {
-        
+
     // }
     // // END OF METHOD C
 
@@ -415,12 +415,12 @@ class PendidikanController extends Controller
 
     // public function editSeminar(Request $request)
     // {
-        
+
     // }
 
     // public function deleteSeminar($id)
     // {
-        
+
     // }
     // // END OF METHOD D
 
@@ -477,12 +477,12 @@ class PendidikanController extends Controller
 
     // public function editTugasAkhir(Request $request)
     // {
-        
+
     // }
 
     // public function deleteTugasAkhir($id)
     // {
-        
+
     // }
     // // END OF METHOD E
 
@@ -539,12 +539,12 @@ class PendidikanController extends Controller
 
     // public function editProposal(Request $request)
     // {
-        
+
     // }
 
     // public function deleteProposal($id)
     // {
-        
+
     // }
     // // END OF METHOD F
 
@@ -599,12 +599,12 @@ class PendidikanController extends Controller
 
     // public function editRendah(Request $request)
     // {
-        
+
     // }
 
     // public function deleteRendah($id)
     // {
-        
+
     // }
     // // END OF METHOD G
 
@@ -659,12 +659,12 @@ class PendidikanController extends Controller
 
     // public function editKembang(Request $request)
     // {
-        
+
     // }
 
     // public function deleteKembang($id)
     // {
-        
+
     // }
     // // END OF METHOD H
 
@@ -721,12 +721,12 @@ class PendidikanController extends Controller
 
     // public function deleteCangkok($id)
     // {
-        
+
     // }
 
     // public function editCangkok(Request $request)
     // {
-        
+
     // }
     // // END OF METHOD I
 
@@ -782,12 +782,12 @@ class PendidikanController extends Controller
 
     // public function editKoordinator(Request $request)
     // {
-        
+
     // }
 
     // public function deleteKoordinator($id)
     // {
-        
+
     // }
     // // END OF METHOD J
 

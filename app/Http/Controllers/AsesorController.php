@@ -2,117 +2,140 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\DetailPenelitian;
 use App\Models\Rencana;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
 
-
-class PenelitianController extends Controller
+class AsesorController extends Controller
 {
-    //HANDLER UPLOAD LAMPIRAN
-    public function postLampiran(Request $request)
+    public function getAllDosen()
     {
-        // Retrieve the id_rencana from the request payload
-        $id_rencana = $request->get('id_rencana');
-        $jenis_penelitian = $request->get("jenis_penelitian");
+        try {
+            $res = Rencana::where('flag_save_permananent_fed', 1)
+                ->select('id_dosen')
+                ->distinct()
+                ->get();
+            return response()->json($res, 200);
+        } catch (\Throwable $th) {
+            return response()->json($res, 400);
+        }
+    }
 
-        // Check if Rencana exists with the provided id_rencana
+    public function reviewRencana(Request $request)
+    {
+        $id_rencana = $request->get('id_rencana');
+        $komentar = $request->get('komentar');
+
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
 
-        if (!$rencana) {
-            return response()->json(['error' => 'Rencana not found'], 404);
-        }
-
-        $id_dosen = $rencana->id_dosen;
-
-        $filenames = [];
-
-        if ($request->hasFile('fileInput')) {
-            $files = $request->file('fileInput');
-            foreach ($files as $file) {
-                if ($file->isValid()) {
-                    $extension = $file->getClientOriginalExtension();
-                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '_' . $id_dosen . '_' . $jenis_penelitian . time() . '.' . $extension;
-                    $file->move(app()->basePath('storage/documents/penelitian'), $filename);
-                    $filenames[] = $filename;
-                } else {
-                    return response()->json(['error' => 'Something went wrong'], 401);
-                }
-            }
-        } else {
-            return response()->json(['error' => 'No files selected'], 400);
-        }
-
-        // Update $rencana->lampiran with new filenames
-        if ($rencana->lampiran == null) {
-            $rencana->lampiran = [];
-        } else {
-            $rencana->lampiran = json_decode($rencana->lampiran);
-        }
-
-        $rencana->lampiran = json_encode(array_merge($rencana->lampiran, $filenames));
-
-        $rencana->save();
+        $rencana->asesor1_frk = $komentar;
 
         $res = [
             "rencana" => $rencana,
-            "message" => "Lampiran added successfully"
+            "message" => "Successfully give approval for fed"
         ];
 
-        return response()->json($res, 202);
-    }
-    //END OF HANDLER POST LAMPIRAN
-
-    //HANDLER GET LAMPIRAN (DOWNLOAD LAMPIRAN WITH ENCODED BASE64 URL)
-    public function getFileLampiran($fileName)
-    {
-        $file = base64_decode($fileName);
-        $filePath = storage_path('documents/penelitian/' . $file);
-
-        $name = basename($filePath);
-        $mimeType = mime_content_type($filePath);
-
-        return response()->file($filePath, [
-            'Content-Type' => $mimeType,
-            'Content-Disposition' => 'inline; filename="' . $name . '"'
-        ]);
-    }
-
-    //HANDLER DELETE LAMPIRAN (DELETE LAMPIRAN WITH ENCODED BASE64 URL)
-    public function deleteFileLampiran($idRencana, $fileName)
-    {
-        $rencana = Rencana::where('id_rencana', $idRencana)->first();
-        $fileName = base64_decode($fileName);
-
-        $lampiran = json_decode($rencana->lampiran);
-
-        $result = array_filter($lampiran, function ($value) use ($fileName) {
-            return $value !== $fileName;
-        });
-
-        if (sizeof(array_values($result)) == sizeof($lampiran)) {
-            return response()->json(["error_message" => "file not found"], 404);
-        }
-
-        $lampiran = array_values($result);
-
-        unlink(storage_path("documents/penelitian/" . $fileName));
-
-        if (sizeof($lampiran) == 0) {
-            $rencana->lampiran = null;
-        } else {
-            // Encode the array back to JSON if needed
-            $rencana->lampiran = json_encode($lampiran);
-        }
-
-        // Save the changes to the database if $rencana is an Eloquent model
         $rencana->save();
 
-        return response()->json($lampiran, 200);
+        return response()->json($res, 200);
     }
 
-    public function getAll($id)
+    public function getAllPendidikan($id)
+    {
+        // BAGIAN A
+        $teori = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.jumlah_evaluasi', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'teori')
+            ->get();
+
+        // BAGIAN B
+        $praktikum = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelas', 'detail_pendidikan.sks_matakuliah', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'praktikum')
+            ->get();
+
+        // BAGIAN C
+        $bimbingan = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'bimbingan')
+            ->get();
+
+        // BAGIAN D
+        $seminar = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'seminar')
+            ->get();
+
+        // BAGIAN E
+        $tugasAkhir = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'tugasAkhir')
+            ->get();
+
+        // BAGIAN F
+        $proposal = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_mahasiswa', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'proposal')
+            ->get();
+
+        // BAGIAN G
+        $rendah = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_sap', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'rendah')
+            ->get();
+
+        // BAGIAN H
+        $kembang = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_sap', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'pengembangan')
+            ->get();
+
+        // BAGIAN I
+        $cangkok = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'cangkok')
+            ->get();
+
+        // BAGIAN J
+        $koordinator = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'koordinator')
+            ->get();
+
+        // Kembalikan data dalam bentuk yang sesuai untuk ditampilkan di halaman
+        return response()->json([
+            'teori' => $teori,
+            'praktikum' => $praktikum,
+            'bimbingan' => $bimbingan,
+            'rendah' => $rendah,
+            'kembang' => $kembang,
+            'cangkok' => $cangkok,
+            'seminar' => $seminar,
+            'koordinator' => $koordinator,
+            'tugasAkhir' => $tugasAkhir,
+            'proposal' => $proposal
+        ], 200);
+    }
+    public function getAllPenelitian($id)
     {
         // Ambil semua data dari masing-masing tabel rencana
 
@@ -120,6 +143,7 @@ class PenelitianController extends Controller
         $penelitian_kelompok = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'penelitian_kelompok')
@@ -129,6 +153,7 @@ class PenelitianController extends Controller
         $penelitian_mandiri = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'penelitian_mandiri')
@@ -138,6 +163,7 @@ class PenelitianController extends Controller
         $buku_terbit = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'buku_terbit')
@@ -147,6 +173,7 @@ class PenelitianController extends Controller
         $buku_internasional = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'buku_internasional')
@@ -156,6 +183,7 @@ class PenelitianController extends Controller
         $menyadur = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', "detail_penelitian.posisi", 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'menyadur')
@@ -165,6 +193,7 @@ class PenelitianController extends Controller
         $menyunting = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'menyunting')
@@ -174,6 +203,7 @@ class PenelitianController extends Controller
         $penelitian_modul = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'penelitian_modul')
@@ -183,6 +213,7 @@ class PenelitianController extends Controller
         $penelitian_pekerti = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'penelitian_pekerti')
@@ -192,6 +223,7 @@ class PenelitianController extends Controller
         $penelitian_tridharma = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jumlah_bkd', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'penelitian_tridharma')
@@ -211,6 +243,7 @@ class PenelitianController extends Controller
                 'rencana.lampiran'
             )
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'jurnal_ilmiah')
@@ -220,6 +253,7 @@ class PenelitianController extends Controller
         $hak_paten = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'hak_paten')
@@ -229,6 +263,7 @@ class PenelitianController extends Controller
         $media_massa = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'media_massa')
@@ -238,6 +273,7 @@ class PenelitianController extends Controller
         $pembicara_seminar = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'pembicara_seminar')
@@ -247,6 +283,7 @@ class PenelitianController extends Controller
         $penyajian_makalah = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
             ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_wilayah', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             ->where('rencana.sub_rencana', 'penyajian_makalah')
@@ -270,5 +307,11 @@ class PenelitianController extends Controller
             'pembicara_seminar' => $pembicara_seminar,
             'penyajian_makalah' => $penyajian_makalah
         ], 200);
+    }
+    public function getAllPengabdian($id)
+    {
+    }
+    public function getAllPenunjang($id)
+    {
     }
 }

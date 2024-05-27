@@ -33,10 +33,12 @@ class SimpulanController extends Controller
     public function simpanEvaluasi($id) //tambahkan 1 params lagi ketika function generate FRK telah dibuat, $id_frk
     {
         try {
-            Rencana::where('id_dosen', $id)->update(['flag_save_permananent_fed' => true]);
+            Rencana::where('id_dosen', $id)->whereNotNull("lampiran")->update(['flag_save_permananent_fed' => true]);
             return response()->json(['message' => 'Berhasil menyimpan Evaluasi Diri'], 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Gagal menyimpan evaluasi diri'], 500);
         }
     }
+
+
 }

@@ -136,20 +136,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/get-lampiran/{fileName}', 'PenelitianController@getFileLampiran');
         $router->delete('/lampiran/{idRencana}/delete/{fileName}', 'PenelitianController@deleteFileLampiran');
 
-        //BAGIAN A
-        $router->get('/penelitan-kelompok/{id}', 'PenelitianController@getPenelitianKelompok($id)');
-
-        //BAGIAN B
-        $router->get('/penelitian-mandiri/{id}', 'PeneltianController@getPenelitianMandiri($id)');
-
-        //BAGIAN D
-        $router->get('/buku-internasional/{id}', 'PenelitianController@getBukuInternasional');
-
-        //BAGIAN M
-        $router->get('/pembicara-seminar/{id}', 'PenelitianController@getPembicaraSeminar');
-
-        //BAGIAN N
-        $router->get('/penyajian-makalah/{id}', 'PenelitianController@getPenyajianMakalah');
+        $router->get('/get-all/{id}', 'AsesorController@getAllPenelitian');
     });
 
     $router->group(['prefix' => 'pengabdian'], function() use ($router){
@@ -159,6 +146,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         //GET FILE LAMPIRAN
         $router->get('/get-lampiran/{fileName}', 'PengabdianController@getFileLampiran');
         $router->delete('/lampiran/{idRencana}/delete/{fileName}', 'PengabdianController@deleteFileLampiran');
+
+
+    });
+
+    $router->group(['prefix' => 'asesor-fed'], function() use ($router){
+        $router->get('/getAllDosen', 'AsesorController@getAllDosen');
+        $router->post('/reviewRencana', 'AsesorController@reviewRencana');
+        $router->get('/get-all-pendidikan/{id}', 'AsesorController@getAllPendidikan');
+        $router->get('/get-all-penelitian/{id}', 'AsesorController@getAllPenelitian');
     });
 
     $router->get('/simpulan/{id}', 'SimpulanController@getAll');
