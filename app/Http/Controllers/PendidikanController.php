@@ -120,8 +120,13 @@ class PendidikanController extends Controller
         }
 
         // Update $rencana->lampiran with new filenames
-        $rencana->lampiran = is_array($rencana->lampiran) ? $rencana->lampiran : [];
-        $rencana->lampiran = array_merge($rencana->lampiran, $filenames);
+        if ($rencana->lampiran == null) {
+            $rencana->lampiran = [];
+        } else {
+            $rencana->lampiran = json_decode($rencana->lampiran);
+        }
+
+        $rencana->lampiran = json_encode(array_merge($rencana->lampiran, $filenames));
 
         $rencana->save();
 
