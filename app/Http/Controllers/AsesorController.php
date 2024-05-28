@@ -27,9 +27,9 @@ class AsesorController extends Controller
         $role = $request->get('role');
         $rencana = Rencana::where('id_rencana', $id_rencana)->first();
 
-        if($role == '1'){
+        if ($role == '1') {
             $rencana->asesor1_fed = $komentar;
-        } else if($role == '2'){
+        } else if ($role == '2') {
             $rencana->asesor2_fed = $komentar;
         }
 
@@ -71,7 +71,7 @@ class AsesorController extends Controller
 
         // BAGIAN D
         $seminar = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung', 'rencana.lampiran', 'rencana.asesor1_fed', 'rencana.asesor2_fed')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung', 'rencana.lampiran', 'rencana.asesor1_fed', 'rencana.asesor2_fed')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'seminar')
@@ -242,8 +242,8 @@ class AsesorController extends Controller
                 'detail_penelitian.lingkup_penerbit',
                 'detail_penelitian.peran',
                 'rencana.sks_terhitung',
-                'rencana.asesor1_frk',
                 'rencana.asesor1_fed',
+                'rencana.asesor2_fed',
                 'rencana.lampiran'
             )
             ->where("id_dosen", $id)
@@ -314,8 +314,185 @@ class AsesorController extends Controller
     }
     public function getAllPengabdian($id)
     {
+
+        // Ambil semua data dari masing-masing tabel rencana
+
+        // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A
+        $kegiatan = Rencana::join('detail_pengabdian', 'rencana.id_rencana', '=', 'detail_pengabdian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pengabdian.jumlah_durasi', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'kegiatan')
+            ->get();
+
+
+        // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B
+        $penyuluhan = Rencana::join('detail_pengabdian', 'rencana.id_rencana', '=', 'detail_pengabdian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pengabdian.jumlah_durasi', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'penyuluhan')
+            ->get();
+
+        // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C
+        $konsultan = Rencana::join('detail_pengabdian', 'rencana.id_rencana', '=', 'detail_pengabdian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pengabdian.posisi', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'konsultan')
+            ->get();
+
+        // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D
+        $karya = Rencana::join('detail_pengabdian', 'rencana.id_rencana', '=', 'detail_pengabdian.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pengabdian.jenis_terbit', 'detail_pengabdian.status_tahapan', 'detail_pengabdian.jenis_pengerjaan', 'detail_pengabdian.peran', 'detail_pengabdian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'karya')
+            ->get();
+
+        // Kembalikan data dalam bentuk yang sesuai untuk ditampilkan di halaman
+        return response()->json([
+            //Data Kegiatan
+            'kegiatan' => $kegiatan,
+            //Data Penyuluhan
+            'penyuluhan' => $penyuluhan,
+
+            //Data Konsultan
+            'konsultan' => $konsultan,
+            //Data Karya
+            'karya' => $karya
+        ], 200);
     }
     public function getAllPenunjang($id)
     {
+        // BAGIAN A
+        $akademik = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jumlah_mahasiswa')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'akademik')
+            ->get();
+
+        // BAGIAN B
+        $bimbingan = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jumlah_mahasiswa')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'bimbingan')
+            ->get();
+
+        // BAGIAN C
+        $ukm = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penunjang.jumlah_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'ukm')
+            ->get();
+
+        // BAGIAN D
+        $sosial = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'sosial')
+            ->get();
+
+        // BAGIAN E
+        $struktural = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jenis_jabatan_struktural')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'struktural')
+            ->get();
+
+        // BAGIAN F
+        $nonstruktural = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jenis_jabatan_nonstruktural')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'nonstruktural')
+            ->get();
+
+        // BAGIAN G
+        $redaksi = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jabatan')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'redaksi')
+            ->get();
+
+        // BAGIAN H
+        $adhoc = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jabatan')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'adhoc')
+            ->get();
+
+        // BAGIAN I
+        $ketuapanitia = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'ketua_panitia')
+            ->get();
+
+        // BAGIAN J
+        $anggotapanitia = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'anggota_panitia')
+            ->get();
+
+        // BAGIAN K
+        $pengurusyayasan = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jabatan', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'pengurus_yayasan')
+            ->get();
+
+        // BAGIAN L
+        $asosiasi = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jenis_tingkatan', 'detail_penunjang.jabatan', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'asosiasi')
+            ->get();
+
+        // BAGIAN M
+        $seminar = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jenis_tingkatan', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'seminar')
+            ->get();
+
+        // BAGIAN N
+        $reviewer = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
+            ->where("id_dosen", $id)
+            ->whereNotNull("lampiran")
+            ->where('rencana.sub_rencana', 'reviewer')
+            ->get();
+
+        // Kembalikan data dalam bentuk yang sesuai untuk ditampilkan di halaman
+        return response()->json([
+            'akademik' => $akademik,
+            'bimbingan' => $bimbingan,
+            'ukm' => $ukm,
+            'sosial' => $sosial,
+            'struktural' => $struktural,
+            'nonstruktural' => $nonstruktural,
+            'redaksi' => $redaksi,
+            'adhoc' => $adhoc,
+            'ketuapanitia' => $ketuapanitia,
+            'anggotapanitia' => $anggotapanitia,
+            'pengurusyayasan' => $pengurusyayasan,
+            'asosiasi' => $asosiasi,
+            'seminar' => $seminar,
+            'reviewer' => $reviewer
+        ], 200);
     }
 }

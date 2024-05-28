@@ -155,6 +155,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/reviewEvaluasi', 'AsesorController@reviewEvaluasi');
         $router->get('/get-all-pendidikan/{id}', 'AsesorController@getAllPendidikan');
         $router->get('/get-all-penelitian/{id}', 'AsesorController@getAllPenelitian');
+        $router->get('/get-all-pengabdian/{id}', 'AsesorController@getAllPengabdian');
+        $router->get('/get-all-penunjang/{id}', 'AsesorController@getAllPenunjang');
     });
 
     $router->get('/simpulan/{id}', 'SimpulanController@getAll');

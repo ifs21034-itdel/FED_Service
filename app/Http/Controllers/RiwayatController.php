@@ -35,7 +35,7 @@ class RiwayatController extends Controller
 
         // BAGIAN D
         $seminar = Rencana::join('detail_pendidikan', 'rencana.id_rencana', '=', 'detail_pendidikan.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_dosen', 'rencana.sks_terhitung')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_pendidikan.jumlah_kelompok', 'rencana.sks_terhitung')
             ->where("id_tanggal", $idTanggal)
             ->where("id_dosen", $idDosen)
             ->where('rencana.sub_rencana', 'seminar')
