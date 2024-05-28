@@ -367,7 +367,7 @@ class AsesorController extends Controller
     {
         // BAGIAN A
         $akademik = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jumlah_mahasiswa')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jumlah_mahasiswa', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'akademik')
@@ -375,7 +375,7 @@ class AsesorController extends Controller
 
         // BAGIAN B
         $bimbingan = Rencana::join('detail_penunjang', 'rencana.id_rencana', '=', 'detail_penunjang.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jumlah_mahasiswa')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'detail_penunjang.jumlah_mahasiswa', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'bimbingan')
@@ -383,7 +383,7 @@ class AsesorController extends Controller
 
         // BAGIAN C
         $ukm = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penunjang.jumlah_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penunjang.jumlah_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'ukm')
@@ -391,7 +391,7 @@ class AsesorController extends Controller
 
         // BAGIAN D
         $sosial = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'sosial')
@@ -399,7 +399,7 @@ class AsesorController extends Controller
 
         // BAGIAN E
         $struktural = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jenis_jabatan_struktural')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jenis_jabatan_struktural', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'struktural')
@@ -407,7 +407,7 @@ class AsesorController extends Controller
 
         // BAGIAN F
         $nonstruktural = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jenis_jabatan_nonstruktural')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jenis_jabatan_nonstruktural', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'nonstruktural')
@@ -415,7 +415,7 @@ class AsesorController extends Controller
 
         // BAGIAN G
         $redaksi = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jabatan')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jabatan', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'redaksi')
@@ -423,7 +423,7 @@ class AsesorController extends Controller
 
         // BAGIAN H
         $adhoc = Rencana::join('detail_penunjang', 'rencana.id_rencana', "=", "detail_penunjang.id_rencana")
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jabatan')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.asesor2_frk', 'detail_penunjang.jabatan', 'rencana.lampiran')
             ->where("id_dosen", $id)
             ->whereNotNull("lampiran")
             ->where('rencana.sub_rencana', 'adhoc')
