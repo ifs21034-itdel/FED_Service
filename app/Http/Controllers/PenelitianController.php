@@ -118,7 +118,7 @@ class PenelitianController extends Controller
 
         // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A // BAGIAN A
         $penelitian_kelompok = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -127,7 +127,7 @@ class PenelitianController extends Controller
 
         // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B // BAGIAN B
         $penelitian_mandiri = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -136,7 +136,7 @@ class PenelitianController extends Controller
 
         // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C // BAGIAN C
         $buku_terbit = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -145,7 +145,7 @@ class PenelitianController extends Controller
 
         // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D // BAGIAN D
         $buku_internasional = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -154,7 +154,7 @@ class PenelitianController extends Controller
 
         // BAGIAN E // BAGIAN E // BAGIAN E // BAGIAN E // BAGIAN E // BAGIAN E
         $menyadur = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', "detail_penelitian.posisi", 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', "detail_penelitian.posisi", 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -163,7 +163,7 @@ class PenelitianController extends Controller
 
         // BAGIAN F // BAGIAN F // BAGIAN F // BAGIAN F // BAGIAN F // BAGIAN F
         $menyunting = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.posisi', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -172,7 +172,7 @@ class PenelitianController extends Controller
 
         // BAGIAN G // BAGIAN G // BAGIAN G // BAGIAN G // BAGIAN G // BAGIAN G
         $penelitian_modul = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.status_tahapan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.peran', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -181,7 +181,7 @@ class PenelitianController extends Controller
 
         // BAGIAN H // BAGIAN H // BAGIAN H // BAGIAN H // BAGIAN H // BAGIAN H
         $penelitian_pekerti = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -190,7 +190,7 @@ class PenelitianController extends Controller
 
         // BAGIAN I // BAGIAN I // BAGIAN I // BAGIAN I // BAGIAN I // BAGIAN I
         $penelitian_tridharma = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jumlah_bkd', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jumlah_bkd', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -207,7 +207,9 @@ class PenelitianController extends Controller
                 'detail_penelitian.peran',
                 'rencana.sks_terhitung',
                 'rencana.asesor1_frk',
+                'rencana.asesor2_frk',
                 'rencana.asesor1_fed',
+                'rencana.asesor2_fed',
                 'rencana.lampiran'
             )
             ->where("id_dosen", $id)
@@ -218,7 +220,7 @@ class PenelitianController extends Controller
 
         // BAGIAN K // BAGIAN K // BAGIAN K // BAGIAN K // BAGIAN K // BAGIAN K
         $hak_paten = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -227,7 +229,7 @@ class PenelitianController extends Controller
 
         // BAGIAN L // BAGIAN L // BAGIAN L // BAGIAN L // BAGIAN L // BAGIAN L
         $media_massa = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -236,7 +238,7 @@ class PenelitianController extends Controller
 
         // BAGIAN M // BAGIAN M // BAGIAN M // BAGIAN M // BAGIAN M // BAGIAN M
         $pembicara_seminar = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.lingkup_wilayah', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
@@ -245,7 +247,7 @@ class PenelitianController extends Controller
 
         // BAGIAN N // BAGIAN N // BAGIAN N // BAGIAN N // BAGIAN N // BAGIAN N
         $penyajian_makalah = Rencana::join('detail_penelitian', 'rencana.id_rencana', '=', 'detail_penelitian.id_rencana')
-            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_wilayah', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_frk', 'rencana.asesor1_fed', 'rencana.lampiran')
+            ->select('rencana.id_rencana', 'rencana.nama_kegiatan', 'detail_penelitian.jenis_pengerjaan', 'detail_penelitian.lingkup_wilayah', 'detail_penelitian.posisi', 'detail_penelitian.jumlah_anggota', 'rencana.sks_terhitung', 'rencana.asesor1_fed', 'rencana.asesor2_fed', 'rencana.lampiran')
             ->where("id_dosen", $id)
             // ->where("rencana.asesor1_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai
             // ->where("rencana.asesor2_frk", 1) //uncomment ketika implementasi save berdasarkan periode betul betul selesai

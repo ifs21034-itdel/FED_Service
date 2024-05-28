@@ -152,7 +152,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->group(['prefix' => 'asesor-fed'], function() use ($router){
         $router->get('/getAllDosen', 'AsesorController@getAllDosen');
-        $router->post('/reviewRencana', 'AsesorController@reviewRencana');
+        $router->post('/reviewEvaluasi', 'AsesorController@reviewEvaluasi');
         $router->get('/get-all-pendidikan/{id}', 'AsesorController@getAllPendidikan');
         $router->get('/get-all-penelitian/{id}', 'AsesorController@getAllPenelitian');
     });
