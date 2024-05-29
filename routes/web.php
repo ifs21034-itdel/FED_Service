@@ -28,6 +28,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     //START ROUTE FOR PENDIDIKAN
     $router->group(['prefix' => 'pendidikan'], function () use ($router) {
+        $router->get('/all/{id}', 'PendidikanController@all');
 
         // //teori
         $router->get('/teori/{id}', 'PendidikanController@getTeori');

@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 class PendidikanController extends Controller
 {
 
+    public function all($id)
+    {
+        $all = Rencana::where('rencana.id_dosen', $id)
+            ->where('rencana.flag_save_permananent_fed', 1)
+            ->count();
+
+            return response()->json($all, 200);
+    }
+
     public function getAll()
     {
          // BAGIAN A
