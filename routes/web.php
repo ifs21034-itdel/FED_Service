@@ -164,4 +164,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/simpulan/{id}', 'SimpulanController@getAll');
     $router->post('/simpulan/simpan-rencana/{id}', 'SimpulanController@simpanEvaluasi');
 
+
+    $router->group(['prefix' => 'riwayat-kegiatan'], function() use ($router){
+        $router->get('/getAllPendidikan/{id}/{id_ta}', 'RiwayatKegiatanController@getAllPendidikan');
+        $router->get('/getAllPenelitian/{id}/{id_ta}', 'RiwayatKegiatanController@getAllPenelitian');
+        $router->get('/getAllPengabdian/{id}/{id_ta}', 'RiwayatKegiatanController@getAllPengabdian');
+        $router->get('/getAllPenunjang/{id}/{id_ta}', 'RiwayatKegiatanController@getAllPenunjang');
+        $router->get('/getSimpulan/{id}/{id_ta}', 'RiwayatKegiatanController@getSimpulan');
+    });
 });
